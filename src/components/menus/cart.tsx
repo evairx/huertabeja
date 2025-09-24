@@ -1,6 +1,6 @@
 "use client";
 import { useContext, useRef } from "react";
-import { CartContext } from "@/components/context/cart-context";
+import { CartContext } from "@/context/cart-context";
 import { useClickOutside } from "@/hook/useClickOutside";
 import * as Styles from "@/styles/cart-style";
 

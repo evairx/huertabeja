@@ -5,7 +5,7 @@ import Cart from "@/components/menus/cart";
 
 export function UseMenu() {
   const pathname = usePathname();
-  const isLoginPage = pathname === "/login";
+  const isLoginPage = pathname === "/login" || pathname === "/reset-password" || pathname === "/update-password";
   return (
     <>
       {isLoginPage ? null : (

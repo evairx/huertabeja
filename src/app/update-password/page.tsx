@@ -1,30 +1,26 @@
 import * as Styles from "@/styles/pages/login-style";
 import Image from "next/image";
-import ButtonGoogleLogin from "./button-google-login";
-import FormLogin from "./form-login";
 import { Alert } from "@/components/common/Alert";
+import FormUpdate from "./form-update";
 
-export default async function Login() {
-
+export default async function UpdatePassword() {
   return (
     <Styles.Container>
       <Alert />
       <Styles.Content>
         <Styles.LeftSide>
-          <Styles.LeftContent>
+          <Styles.LeftContent width="450px">
             <Styles.LogoContent>
               <Image src="/logo.png" alt="Logo" width={220} height={70} />
             </Styles.LogoContent>   
-            <Styles.TextH1>Iniciar sesión</Styles.TextH1>
-            <ButtonGoogleLogin />
-            <Styles.Divider>O</Styles.Divider>
-            <FormLogin/>
+            <Styles.TextH1>Actualizar contraseña</Styles.TextH1>
+            <FormUpdate />
           </Styles.LeftContent>
         </Styles.LeftSide>
-        <Styles.ImageContainer>
+        <Styles.ImageContainer height="450px">
           <img
-            src="/persona.webp"
-            alt="Persona con planta"
+            src="/candado.webp"
+            alt="Candado"
           />
         </Styles.ImageContainer>
       </Styles.Content>

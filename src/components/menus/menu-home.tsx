@@ -3,7 +3,7 @@ import * as Styles from "@/styles/menu-home-style"
 import Image from "next/image"
 import Link from "next/link"
 import ShoppingCartIcon from "@/utils/icons/shopping-cart"
-import { CartContext } from "../context/cart-context"
+import { CartContext } from "../../context/cart-context"
 import { useContext } from "react"
 
 export default function MenuHome() {

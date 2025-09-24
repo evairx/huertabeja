@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { setSession } from "@/app/actions";
 
-export default function loginCallback() {
+export default function resetCallback() {
     useEffect(() => {
         async function session() {
                 const hash = window.location.hash;
@@ -16,7 +16,7 @@ export default function loginCallback() {
 
                 await setSession(accessToken, refreshToken).then((res) => {
                     if (res.status === 200) {
-                        window.location.href = "/account";
+                        window.location.href = "/update-password";
                     } else {
                         window.location.href = "/login";
                     }

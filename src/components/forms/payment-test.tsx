@@ -37,7 +37,7 @@ const CardFields = memo(({ onBinChange }: { onBinChange: (bin: any) => void }) =
                 <div style={{ width: '100%' }}>
                     <Styles.Label>Fecha de vencimiento</Styles.Label>
                     <div className="card-field">
-                        <Styles.IconDate top={52} />
+                        <Styles.IconDate/>
                         <div className="input-wrapper">
                             <ExpirationDate style={{ fontSize: '18px' }} />
                         </div>

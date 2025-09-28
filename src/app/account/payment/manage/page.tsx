@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: 'Iniciar sesión - Huertabeja',
+  title: 'Mis métodos de pago - Huertabeja',
 }
 
 export default async function PaymentManagePage() {
@@ -18,14 +18,20 @@ export default async function PaymentManagePage() {
             </Styles.Header>
             <Content height="87dvh">
                 <LeftSide width="900px">
-                    <Styles.Main>
+                    <Styles.Main width="600px">
                         <Styles.Title>Mis métodos de pago</Styles.Title>
-                        <Suspense fallback={<div>Cargando métodos de pago...</div>}>
+                        <Suspense fallback={
+                            <Styles.ContainerCards>
+                                {[1, 2, 3].map((_, index) => (
+                                    <Styles.CardLoadingSkeleton key={index} />
+                                ))}
+                            </Styles.ContainerCards>
+                        }>
                             <Cards />
                         </Suspense>
                         <Styles.ButtonContainer>
                             <Link href="/account/payment/add">
-                                <Styles.ButtonAdd>AGREGAR NUEVA TARJETA</Styles.ButtonAdd>
+                                <Styles.ButtonAdd>Agregar metodo de pago</Styles.ButtonAdd>
                             </Link>
                         </Styles.ButtonContainer>
                     </Styles.Main>

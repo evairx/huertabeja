@@ -13,7 +13,11 @@ export async function Cards() {
     if (!access_token) {
         return (
             <ClientRefresher>
-                <div>Recargando...</div>
+                <Styles.ContainerCards>
+                    {[1, 2, 3].map((_, index) => (
+                        <Styles.CardLoadingSkeleton key={index} />
+                    ))}
+                </Styles.ContainerCards>
             </ClientRefresher>
         );
     }
@@ -61,12 +65,16 @@ export async function Cards() {
                             <Styles.CardText>
                                 {transformCardNmae(card.title)} termina en {card.last_four_digits}
                             </Styles.CardText>
-                            <RemoveCard id={card.id} cardId={card.card_id}/>
+                            <RemoveCard id={card.id} cardId={card.card_id} />
                         </Styles.Card>
                     ))}
                 </>
             ) : (
-                <div>No tienes ninguna tarjeta guardada.</div>
+                <Styles.Card>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                        <Styles.CardText>No tienes métodos de pago guardados.</Styles.CardText>
+                    </div>
+                </Styles.Card>
             )}
         </Styles.ContainerCards>
     );

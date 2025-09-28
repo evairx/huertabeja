@@ -31,12 +31,17 @@ export const InputContents = styled.div`
 `
 
 export const Input = styled.input<{ active?: boolean, error?: boolean }>`
-    background: #FFFFFF;
-    border: 1px solid ${({ error }) => error ? '#FF0000' : '#D3D3D3'};
     width: 100%;
-    padding: 10px 40px;
-    font-size: 18px;
-    transition: border-color 0.5s;
+    background: #fff;
+    border: none;
+    padding: 13px 52px;
+    -webkit-box-shadow: 1px 8px 14px -8px rgba(0,0,0,0.15); 
+    box-shadow: 1px 8px 14px -8px rgba(0,0,0,0.15);
+    border-radius: 666px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    border: 2px solid ${({ error, active }) => error ? '#FF0000' : active ? '#004E09' : 'rgba(255, 255, 255, 1)'};
+    transition: all .3s ease-in-out;
 
     &:focus {
         outline: none;
@@ -47,14 +52,36 @@ export const Input = styled.input<{ active?: boolean, error?: boolean }>`
     }
 `
 export const InputDiv = styled.div<{ active?: boolean, error?: boolean }>`
-    background: #FFFFFF;
-    border: 1px solid ${({ error }) => error ? '#FF0000' : '#D3D3D3'};
     width: 100%;
-    height: 40px;
-    padding: 10px 40px;
-    font-size: 18px;
+    background: #fff;
+    border: none;
+    padding: 13px 52px;
+    -webkit-box-shadow: 1px 8px 14px -8px rgba(0,0,0,0.15); 
+    box-shadow: 1px 8px 14px -8px rgba(0,0,0,0.15);
+    border-radius: 666px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    height: 52px;
+    border: 2px solid ${({ error, active }) => error ? '#FF0000' : active ? '#004E09' : 'rgba(255, 255, 255, 1)'};
     position: relative;
     overflow: hidden;
+    transition: all .3s ease-in-out;
+`
+
+export const LabelLoading = styled.div`
+    width: 224px;
+    height: 28px;
+    background-color: #c2c2c2bb;
+
+    animation: pulse 1.4s ease-in-out infinite;
+`
+
+export const InputLoading = styled.div<{ width?: number }>`
+    width: ${({ width }) => width ? '100%' : '224px'};
+    height: 52px;
+    background-color: #c2c2c2bb;
+
+    animation: pulse 1.4s ease-in-out infinite;
 `
 
 export const InputsContent = styled.div`
@@ -119,7 +146,7 @@ export const IconUser = styled.div<{ active?: boolean }>`
     width: 24px;
     height: 24px;
     position: absolute;
-    left: 8px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
     background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_483_80)'%3E%3Cpath d='M6 5.25C6 6.04565 6.31607 6.80871 6.87868 7.37132C7.44129 7.93393 8.20435 8.25 9 8.25C9.79565 8.25 10.5587 7.93393 11.1213 7.37132C11.6839 6.80871 12 6.04565 12 5.25C12 4.45435 11.6839 3.69129 11.1213 3.12868C10.5587 2.56607 9.79565 2.25 9 2.25C8.20435 2.25 7.44129 2.56607 6.87868 3.12868C6.31607 3.69129 6 4.45435 6 5.25Z' stroke='%23A4A4A4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M4.5 15.75V14.25C4.5 13.4544 4.81607 12.6913 5.37868 12.1287C5.94129 11.5661 6.70435 11.25 7.5 11.25H10.5C11.2956 11.25 12.0587 11.5661 12.6213 12.1287C13.1839 12.6913 13.5 13.4544 13.5 14.25V15.75' stroke='%23A4A4A4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_483_80'%3E%3Crect width='18' height='18' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
@@ -131,7 +158,7 @@ export const IconRut = styled.div<{ active?: boolean }>`
     width: 24px;
     height: 24px;
     position: absolute;
-    left: 8px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
     background-image: url("${({ active }) => active ? ICONS.rutActive : ICONS.rutInactive}");
@@ -143,7 +170,7 @@ export const IconCard = styled.div<{ active?: boolean, top?: number }>`
     width: 24px;
     height: 24px;
     position: absolute;
-    left: 8px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
     background-image: url("${({ active }) => active ? ICONS.cardActive : ICONS.cardInactive}");
@@ -155,7 +182,7 @@ export const IconDate = styled.div<{ active?: boolean }>`
     width: 24px;
     height: 24px;
     position: absolute;
-    left: 8px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
     background-image: url("${({ active }) => active ? ICONS.dateActive : ICONS.dateInactive}");
@@ -167,7 +194,7 @@ export const IconCvv = styled.div<{ active?: boolean, top?: number }>`
     width: 24px;
     height: 24px;
     position: absolute;
-    left: 8px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
     background-image: url("${({ active }) => active ? ICONS.cvvActive : ICONS.cvvInactive}");

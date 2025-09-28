@@ -12,7 +12,7 @@ export const Header = styled.header`
     
 `
 
-export const Main = styled.main`
+export const Main = styled.main<{ width: string }>`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -20,7 +20,7 @@ export const Main = styled.main`
     padding: 20px;
     gap: 20px;
     height: calc(100dvh - 150px);
-    width: 600px;
+    width: ${({ width }) => width || '600px'};
     margin: 0 auto;
 
     a {
@@ -34,11 +34,11 @@ export const Main = styled.main`
 `
 
 export const Title = styled.p`
-    font-size: 28px;
-    letter-spacing: 0.10em;
-    font-weight: 500;
-    color: #656565;
-    margin-bottom: 30px;
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: #000000ff;
+    margin-bottom: 15px;
 `
 
 export const ContainerCards = styled.div`
@@ -47,6 +47,32 @@ export const ContainerCards = styled.div`
     flex-direction: column;
     gap: 15px;
 `
+
+export const CardLoadingSkeleton = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border: 2px solid #E0E0E0;
+    width: 100%;
+    height: 59px;
+    padding: 13px 45px;
+    border-radius: 10px;
+
+    background-color: #c2c2c2bb;
+    animation: pulse 1.4s ease-in-out infinite;
+
+    @keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 1;
+    }
+`;
 
 export const Card = styled.div`
     display: flex;
@@ -77,7 +103,7 @@ export const ButtonAdd = styled.button`
     color: #fff;
     font-size: 1.2rem;
     font-weight: 500;
-    padding: 15px 20px;
+    padding: 15px 55px;
     margin-top: 10px;
     border-radius: 666px;
     transition: all 0.2s ease-in-out;
@@ -86,6 +112,7 @@ export const ButtonAdd = styled.button`
     justify-content: center;
     align-items: center;
     gap: 70px;
+    margin-top: 20px;
 
     &:hover {
       scale: 0.97;
@@ -131,20 +158,31 @@ export const ButtonTrash = styled.button`
 `
 
 export const ContainerAdd = styled.div`
-    background-color: #F9F9F8;
-    border: 2px solid #DBDBDB;
     padding: 20px;
     border-radius: 10px;
-    min-width: 600px;
+    width: 100%;
     min-height: 400px;
+
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.3;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
 `
 
 export const Label = styled.label`
-    color: #777777;
-    font-size: 18px;
-    text-transform: uppercase;
-    margin-top: 10px;
-    letter-spacing: 0.15em;
+    color: #696969;
+    font-weight: 500;
+    font-size: 1.050rem;
+    letter-spacing: .100em;
+    margin-bottom: 8px;
+    margin-top: 8px;
 `
 
 export const Loading = styled.div`
@@ -247,5 +285,50 @@ export const ButtonCancel = styled.button`
     &:hover {
         opacity: 0.7;
         scale: 0.96;
+    }
+`
+
+export const ButtonAddCard = styled.button`
+    width: 100%;
+    background: #01700eff;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 15px 20px;
+    margin-top: 10px;
+    border-radius: 666px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 70px;
+    margin-top: 30px;
+
+    &:hover {
+        scale: 0.97;
+        opacity: 0.6;
+    }
+`
+
+export const ButtonAddCardLoading = styled.div`
+    margin-top: 30px;
+    width: 100%;
+    background-color: #c2c2c2bb;
+    height: 52px;
+
+    animation: pulse 1.4s ease-in-out infinite;
+
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.3;
+        }
+        100% {
+            opacity: 1;
+        }
     }
 `

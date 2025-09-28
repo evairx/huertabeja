@@ -10,7 +10,7 @@ export default function ClientRefresher({children}: {children?: React.ReactNode}
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const res = await fetch('/api/refresh_session', {
+        const res = await fetch('/account/refresh_session', {
           method: 'POST',
           cache: 'no-store',
           credentials: 'include'
@@ -23,11 +23,10 @@ export default function ClientRefresher({children}: {children?: React.ReactNode}
           await setSession(session.access_token, session.refresh_token, session.expires_at);
           router.refresh();
         } else {
-          router.push('/account/login');
+          console.error("Invalid session data:", session);
         }
       } catch (error) {
         console.error("Error fetching session:", error);
-        router.push('/account/login');
       }
     };
 

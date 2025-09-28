@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, memo, useCallback, useContext } from 'react';
+import { useEffect, useState, memo, useCallback, useContext, useRef } from 'react';
 import {
     initMercadoPago,
     CardNumber,
@@ -10,7 +10,7 @@ import {
     getIssuers,
 } from '@mercadopago/sdk-react';
 import * as Styles from "@/styles/payment-style"
-import { ContainerAdd, Label } from "@/styles/pages/payment-manage"
+import { ContainerAdd, Label, ButtonAddCard, ButtonAddCardLoading } from "@/styles/pages/payment-manage"
 import { saveCardToken } from '@/app/actions';
 import { AlertContext } from "@/context/alert-context";
 
@@ -83,7 +83,40 @@ export default function FormAdd() {
     return (
         <ContainerAdd>
             {loading ? (
-                <div>Cargando formulario...</div>
+                <>
+                    <Styles.LabelLoading />
+                    <Styles.InputContents>
+                        <Styles.InputLoading width={470} />
+                    </Styles.InputContents>
+
+                    <Styles.LabelLoading />
+                    <Styles.InputContents>
+                        <Styles.InputLoading width={470} />
+                    </Styles.InputContents>
+
+                    <Styles.LabelLoading/>
+                    <Styles.InputContents>
+                        <Styles.InputLoading width={470} />
+                    </Styles.InputContents>
+
+                    <Styles.InputsContent>
+                        <div style={{ width: '100%' }}>
+                            <Styles.LabelLoading />
+                            <Styles.InputContents>
+                                <Styles.InputLoading />
+                            </Styles.InputContents>
+                        </div>
+
+                        <div style={{ width: '100%' }}>
+                            <Styles.LabelLoading />
+                            <Styles.InputContents>
+                                <Styles.InputLoading />
+                            </Styles.InputContents>
+                        </div>
+                    </Styles.InputsContent>
+
+                    <ButtonAddCardLoading/>
+                </>
             ) : (
                 <>
                     <Label>TITULAR DE LA TARJETA</Label>
@@ -114,16 +147,16 @@ export default function FormAdd() {
 
                     <CardFields onBinChange={handleBinChange} error={error} />
 
-                    <button onClick={handleSubmit} disabled={loadingTransaction}>
+                    <ButtonAddCard onClick={handleSubmit} disabled={loadingTransaction}>
                         {loadingTransaction ? 'Procesando...' : 'Agregar'}
-                    </button>
+                    </ButtonAddCard>
                 </>
             )}
         </ContainerAdd>
     )
 }
 
-const CardFields = memo(({ onBinChange, error }: { onBinChange: (bin: any) => void; error: boolean }) => {
+const CardFields = memo(({ onBinChange, error }: { onBinChange: (bin: any) => void; error: boolean; }) => {
     const handleBinChange = useCallback((bin: any) => {
         if (bin?.bin) onBinChange(bin);
     }, [onBinChange]);
@@ -132,10 +165,15 @@ const CardFields = memo(({ onBinChange, error }: { onBinChange: (bin: any) => vo
         <>
             <Styles.Label>Número de la tarjeta</Styles.Label>
             <Styles.InputContents>
-                <Styles.InputDiv error={error}>
+                <Styles.InputDiv
+                    error={error}
+                >
                     <Styles.IconCard />
                     <div className="input-wrapper">
-                        <CardNumber style={{ fontSize: '18px' }} onBinChange={handleBinChange} />
+                        <CardNumber
+                            style={{ fontSize: '18px' }}
+                            onBinChange={handleBinChange}
+                        />
                     </div>
                 </Styles.InputDiv>
             </Styles.InputContents>
@@ -170,7 +208,7 @@ const CardFields = memo(({ onBinChange, error }: { onBinChange: (bin: any) => vo
                 .input-wrapper {
                     position: absolute;
                     top: 58%;
-                    left: 40px;
+                    left: 53px;
                     transform: translateY(-50%);
                     width: 100%;
                 }

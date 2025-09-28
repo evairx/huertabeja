@@ -5,6 +5,7 @@ import { CartProvider } from "@/context/cart-context";
 import { AlertProvider } from "@/context/alert-context";
 import { CardProvider } from "@/context/card-context";
 import { UseMenu } from "@/utils/use-menu";
+import { SessionProvider } from "next-auth/react";
 
 const poppins = Poppins({
   subsets: ["latin"],

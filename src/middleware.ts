@@ -61,6 +61,7 @@ function paymenthNotPage(request: NextRequest) {
   }
 }
 
+
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('access_token')?.value
   const refreshToken = request.cookies.get('refresh_token')?.value

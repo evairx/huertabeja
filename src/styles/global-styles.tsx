@@ -10,7 +10,7 @@ export default function GlobalStyles() {
         }
 
         body {
-            background-color: #f5f5f5ff;
+            background-color: #FAF9F6;
         }
     `;
 

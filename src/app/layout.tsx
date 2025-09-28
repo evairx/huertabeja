@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import EmotionProvider from "@/components/providers/emotion-provider";
 import { CartProvider } from "@/context/cart-context";
 import { AlertProvider } from "@/context/alert-context";
+import { CardProvider } from "@/context/card-context";
 import { UseMenu } from "@/utils/use-menu";
 
 const poppins = Poppins({
@@ -22,8 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <EmotionProvider>
           <AlertProvider>
             <CartProvider>
-              <UseMenu/>
-              {children}
+              <CardProvider>
+                <UseMenu/>
+                {children}
+              </CardProvider>
             </CartProvider>
           </AlertProvider>
         </EmotionProvider>

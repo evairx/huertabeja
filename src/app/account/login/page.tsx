@@ -3,9 +3,14 @@ import Image from "next/image";
 import ButtonGoogleLogin from "./button-google-login";
 import FormLogin from "./form-login";
 import { Alert } from "@/components/common/Alert";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Iniciar sesión - Huertabeja',
+  description: 'Inicia sesión en Huertabeja para gestionar tus plantas y recibir consejos personalizados de cuidado.',
+}
 
 export default async function Login() {
-
   return (
     <Styles.Container>
       <Alert />
@@ -21,7 +26,7 @@ export default async function Login() {
             <FormLogin/>
           </Styles.LeftContent>
         </Styles.LeftSide>
-        <Styles.ImageContainer>
+        <Styles.ImageContainer height="650px">
           <img
             src="/persona.webp"
             alt="Persona con planta"

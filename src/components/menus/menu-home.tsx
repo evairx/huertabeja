@@ -22,7 +22,7 @@ export default function MenuHome() {
                 <li>Sobre Nosotros</li>
             </ul>
             <Styles.UlRight>
-                <Link href="/login">
+                <Link href="/account/login">
                     <Styles.TextLogin>Acceder</Styles.TextLogin>
                 </Link>
                 <Styles.BorderSeparator />

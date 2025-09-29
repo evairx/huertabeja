@@ -21,16 +21,12 @@ export default function ButtonLogin() {
         setRefresh(false);
 
         try {
-            const logged = await isLogged();
-            if (logged.body?.isLogged) {
-                const res = await getSession();
-                if (res?.status === 200) {
-                    setUser(res.body?.data);
-                } else {
-                    setRefresh(true);
-                }
+            const res = await getSession();
+
+            if (res?.status === 200) {
+                setUser(res.body?.data);
             } else {
-                setUser(null);
+                setRefresh(true);
             }
         } catch (error) {
             setRefresh(true);
@@ -84,7 +80,6 @@ export default function ButtonLogin() {
     const handleSignOut = async () => {
         const res = await signOut();
         if (res?.status === 200) {
-            setUser(null);
             router.refresh();
         }
     };

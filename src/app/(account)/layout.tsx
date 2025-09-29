@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import EmotionProvider from "@/components/providers/emotion-provider";
-import { CartProvider } from "@/context/cart-context";
 import { AlertProvider } from "@/context/alert-context";
 import { CardProvider } from "@/context/card-context";
-import { UseMenu } from "@/utils/use-menu";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -22,12 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={poppins.className}>
         <EmotionProvider>
           <AlertProvider>
-            <CartProvider>
-              <CardProvider>
-                <UseMenu/>
-                {children}
-              </CardProvider>
-            </CartProvider>
+            <CardProvider>
+              {children}
+            </CardProvider>
           </AlertProvider>
         </EmotionProvider>
       </body>

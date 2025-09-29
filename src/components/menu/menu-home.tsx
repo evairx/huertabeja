@@ -1,16 +1,13 @@
-"use client"
 import * as Styles from "@/styles/menu-home-style"
 import Image from "next/image"
 import Link from "next/link"
-import ShoppingCartIcon from "@/utils/icons/shopping-cart"
-import { CartContext } from "../../context/cart-context"
-import { useContext } from "react"
 import ButtonLogin from "./button-login."
+import { ButtonCart } from "./button-cart"
+import { cookies } from "next/headers"
 
 export default function MenuHome() {
-    const { open, setOpen } = useContext(CartContext)
-
-    let counter = 2;
+    const cookiesStore = cookies()
+    const refresh = cookiesStore.get("refresh_token")?.value
 
     return (
         <Styles.Menu>
@@ -24,14 +21,15 @@ export default function MenuHome() {
                 <li>Sobre Nosotros</li>
             </ul>
             <Styles.UlRight>
-                <ButtonLogin />
+                {refresh ? (
+                    <ButtonLogin />
+                ) : (
+                    <Link href="/account/login">
+                        <Styles.TextLogin>Acceder</Styles.TextLogin>
+                    </Link>
+                )}
                 <Styles.BorderSeparator />
-                <Styles.IconContainer onClick={() => setOpen(!open)}>
-                    {counter > 0 && (
-                        <Styles.CounterCart>{counter}</Styles.CounterCart>
-                    )}
-                    <ShoppingCartIcon />
-                </Styles.IconContainer>
+                <ButtonCart />
             </Styles.UlRight>
         </Styles.Menu>
     )

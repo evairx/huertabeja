@@ -4,24 +4,42 @@ import { useEffect } from "react";
 import { setSession } from "@/app/actions";
 import { useRouter } from "next/navigation";
 
-export default function ClientRefresher({children}: {children?: React.ReactNode}) {
+type ClientRefresherProps = {
+  children?: React.ReactNode;
+  onSuccess?: () => void;
+};
+
+export default function ClientRefresher({ children, onSuccess }: ClientRefresherProps) {
   const router = useRouter();
 
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const res = await fetch('/account/refresh_session', {
-          method: 'POST',
-          cache: 'no-store',
-          credentials: 'include'
+        const res = await fetch("/api/refresh_session", {
+          method: "POST",
+          cache: "no-store",
+          credentials: "include",
         });
+
         if (!res.ok) {
-          throw new Error("Failed to fetch session");
+          console.error("Failed to refresh session:", res.statusText);
+          return;
         }
-        const session = await res.json() as { access_token?: string; refresh_token?: string, expires_at?: number };
+
+        const session = (await res.json()) as {
+          access_token?: string;
+          refresh_token?: string;
+          expires_at?: number;
+        };
+
         if (session.access_token && session.refresh_token && typeof session.expires_at === "number") {
           await setSession(session.access_token, session.refresh_token, session.expires_at);
-          router.refresh();
+
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            router.refresh();
+          }
         } else {
           console.error("Invalid session data:", session);
         }
@@ -31,7 +49,7 @@ export default function ClientRefresher({children}: {children?: React.ReactNode}
     };
 
     fetchSession();
-  }, []);
+  }, [onSuccess, router]);
 
-  return children;
+  return <>{children}</>;
 }

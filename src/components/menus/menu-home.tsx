@@ -4,26 +4,13 @@ import Image from "next/image"
 import Link from "next/link"
 import ShoppingCartIcon from "@/utils/icons/shopping-cart"
 import { CartContext } from "../../context/cart-context"
-import { useContext, useEffect, useState } from "react"
-import { getSession } from "@/app/actions"
-
+import { useContext } from "react"
+import ButtonLogin from "./button-login."
 
 export default function MenuHome() {
     const { open, setOpen } = useContext(CartContext)
-    const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<any>(null);
-    console.log(open)
 
-    useEffect(() => {
-        async function fetchData() {
-            const res = await getSession()
-            if (res?.status === 200) {
-                setUser(res?.body?.data)
-            }
-            setLoading(false);
-        }
-        fetchData()
-    }, [])
+    let counter = 2;
 
     return (
         <Styles.Menu>
@@ -37,21 +24,12 @@ export default function MenuHome() {
                 <li>Sobre Nosotros</li>
             </ul>
             <Styles.UlRight>
-                {loading ? (
-                    <Styles.AvatarLoading />
-                ) : (
-                    user ? (
-                        <div>
-                            <Image src={user.avatar} alt={user.name} width={40} height={40} style={{ borderRadius: '999px', marginTop: '8px'}}/>
-                        </div>
-                    ) : (
-                        <Link href="/account/login">
-                            <Styles.TextLogin>Acceder</Styles.TextLogin>
-                        </Link>
-                    )
-                )}
+                <ButtonLogin />
                 <Styles.BorderSeparator />
                 <Styles.IconContainer onClick={() => setOpen(!open)}>
+                    {counter > 0 && (
+                        <Styles.CounterCart>{counter}</Styles.CounterCart>
+                    )}
                     <ShoppingCartIcon />
                 </Styles.IconContainer>
             </Styles.UlRight>

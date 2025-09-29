@@ -47,10 +47,29 @@ export const IconContainer = styled.div`
     color: white;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    position: relative;
 
     &:hover {
         opacity: 0.6;
     }
+`
+
+export const CounterCart = styled.div`
+    width: 28px;
+    height: 28px;
+    background: var(--bg-primary-color);
+    color: var(--color-black);
+    position: absolute;
+    right: -10px;
+    top: -7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    -webkit-box-shadow: 0px 0px 18px -6px #000000; 
+    box-shadow: 0px 0px 18px -6px #000000;
 `
 
 export const AvatarLoading = styled.div`
@@ -70,5 +89,76 @@ export const AvatarLoading = styled.div`
         100% {
             opacity: 1;
         }
+    }
+`
+
+export const UserContainer = styled.div`
+    position: relative;
+`
+
+export const AvatarContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+
+    & :hover {
+        opacity: 0.8;
+    }
+`
+
+export const Avatar = styled.div`
+    display: inline-block;
+    border-radius: 50%;
+    border: 2px solid #2c6e49;
+    padding: 2px;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
+`
+
+export const AvatarImage = styled.img`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+`
+
+export const UserName = styled.p`
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--color-black);
+`
+
+export const OptionsMenu = styled.div<{ open: boolean }>`
+    position: absolute;
+    top: 60px;
+    background: var(--bg-primary-color);
+    width: 240px;
+    min-height: 130px;
+    border-radius: 8px;
+    padding: 1rem;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 999;
+    -webkit-box-shadow: 0px 0px 15px -4px rgba(0,0,0,0.19); 
+    box-shadow: 0px 0px 15px -4px rgba(0,0,0,0.19);
+    display: ${({ open }) => (open ? "flex" : "none")};
+    pointer-events: auto;
+    transition: all 0.3s ease-in-out;
+`
+
+export const OptionsItem = styled.div`
+    font-size: 1.1rem;
+    background: none;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background: #f3f3f3ff;
     }
 `

@@ -81,6 +81,35 @@ export async function signUp(formData: FormData) {
     return { status: 200, body: { message: "Usuario creado exitosamente" } };
 }
 
+export async function signOut() {
+    const cookieStore = await cookies();
+
+    const access_token = cookieStore.get("access_token")?.value || null;
+    const refresh_token = cookieStore.get("refresh_token")?.value || null;
+
+    if (!access_token || !refresh_token) {
+        return { status: 400, body: { error: "No autenticado" } }
+    }
+
+    const supabase = getSupabaseClient();
+
+    await supabase.auth.setSession({
+        access_token: access_token,
+        refresh_token: refresh_token,
+    });
+
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+        return { status: 400, body: { error: error.message } }
+    }
+
+    cookieStore.delete("access_token");
+    cookieStore.delete("refresh_token");
+
+    return { status: 200 };
+}
+
 export async function setSession(access_token: string, refresh_token: string, at_expires_at: number) {
     if (!access_token || !refresh_token) return { status: 500 };
     const cookieStore = await cookies();
@@ -105,6 +134,18 @@ export async function setSession(access_token: string, refresh_token: string, at
     });
 
     return { status: 200 };
+}
+
+export async function isLogged() {
+    const cookieStore = await cookies();
+
+    const refresh_token = cookieStore.get("refresh_token")?.value || null;
+
+    if (!refresh_token) {
+        return { status: 200, body: { isLogged: false } }
+    }
+
+    return { status: 200, body: { isLogged: true } };
 }
 
 export async function getSession() {

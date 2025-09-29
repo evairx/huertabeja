@@ -1,7 +1,7 @@
 "use client";
 import * as Styles from "@/styles/pages/login-style";
 import { useContext, useState } from "react";
-import { sendResetPasswordEmnail} from "@/app/actions";
+import { sendResetPasswordEmail } from "@/app/actions";
 import { AlertContext } from "@/context/alert-context";
 
 export default function FormReset() {
@@ -22,7 +22,7 @@ export default function FormReset() {
     const formData = new FormData();
     formData.append("email", email);
 
-    const res = await sendResetPasswordEmnail(formData);
+    const res = await sendResetPasswordEmail(formData);
 
     if (res && res.status === 400) {
       setLoading(false);

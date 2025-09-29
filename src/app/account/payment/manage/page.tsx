@@ -16,7 +16,12 @@ export default async function PaymentManagePage() {
             <Styles.Header>
                 <Image src="/logo.png" alt="Manage Payment" width={240} height={70} />
             </Styles.Header>
-            <Content height="87dvh">
+            <Content 
+                height="87dvh"
+                queries={[
+                    { break: 1600, css: "height: 85dvh;" },
+                ]}
+            >
                 <LeftSide width="900px">
                     <Styles.Main width="600px">
                         <Styles.Title>Mis métodos de pago</Styles.Title>

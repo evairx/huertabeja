@@ -22,6 +22,7 @@ export default function ButtonGoogleLogin() {
             router.push(data.body.data.url);
         } else if(data.status == 500) {
             showAlert("Hubo un error al iniciar sesión con Google");
+            setLoading(false);
         }
     }
 

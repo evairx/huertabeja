@@ -50,6 +50,11 @@ export const Input = styled.input<{ active?: boolean, error?: boolean }>`
     &::placeholder {
         color: #9c9c9cff;
     }
+
+    @media (max-width: 1600px) { 
+        font-size: 1rem;
+        padding: 12px 50px;
+    }
 `
 export const InputDiv = styled.div<{ active?: boolean, error?: boolean }>`
     width: 100%;
@@ -66,6 +71,12 @@ export const InputDiv = styled.div<{ active?: boolean, error?: boolean }>`
     position: relative;
     overflow: hidden;
     transition: all .3s ease-in-out;
+
+    @media (max-width: 1600px) {
+        font-size: 1rem;
+        padding: 12px 50px;
+        height: 46px;
+    }
 `
 
 export const LabelLoading = styled.div`

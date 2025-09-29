@@ -15,25 +15,25 @@ async function dashboardMiddleware(request: NextRequest, accessToken: string | u
   }
 
   try {
-      const jwtdecode = await decodeJwt(accessToken)
-      const idUser = jwtdecode.sub
-      
-      if (!idUser) {
-        return NextResponse.redirect(new URL('/account/login', request.url))
-      }
+    const jwtdecode = await decodeJwt(accessToken)
+    const idUser = jwtdecode.sub
 
-      const supabase = getSupabaseClient()
-      const { data, error } = await supabase.rpc('user_access_panel', { p_user_id: idUser })
-
-      if (error || !data) {
-        return NextResponse.redirect(new URL('/account', request.url))
-      }
-
-      return null
-
-    } catch (error) {
+    if (!idUser) {
       return NextResponse.redirect(new URL('/account/login', request.url))
     }
+
+    const supabase = getSupabaseClient()
+    const { data, error } = await supabase.rpc('user_access_panel', { p_user_id: idUser })
+
+    if (error || !data) {
+      return NextResponse.redirect(new URL('/account', request.url))
+    }
+
+    return null
+
+  } catch (error) {
+    return NextResponse.redirect(new URL('/account/login', request.url))
+  }
 }
 
 function authMiddleware(request: NextRequest, accessToken: string | undefined, refreshToken: string | undefined) {
@@ -48,9 +48,20 @@ function authMiddleware(request: NextRequest, accessToken: string | undefined, r
 function accountMiddleware(request: NextRequest, refresh_token: string | undefined) {
   const pathname = request.nextUrl.pathname
 
-  if (pathname.startsWith('/account/payment') && !refresh_token) {
+  const publicPaths = [
+    '/account/login',
+    '/account/register',
+    '/account/reset-password',
+  ]
+
+  const isAccountRoute = pathname.startsWith('/account')
+  const isPublicRoute = publicPaths.some(path => pathname.startsWith(path))
+
+  if (isAccountRoute && !isPublicRoute && !refresh_token) {
     return NextResponse.redirect(new URL('/account/login', request.url))
   }
+
+  return null
 }
 
 function paymenthNotPage(request: NextRequest) {
@@ -61,11 +72,10 @@ function paymenthNotPage(request: NextRequest) {
   }
 }
 
-
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('access_token')?.value
   const refreshToken = request.cookies.get('refresh_token')?.value
-  
+
   const dashboardResult = await dashboardMiddleware(request, accessToken)
   if (dashboardResult) return dashboardResult
 
@@ -77,6 +87,9 @@ export async function middleware(request: NextRequest) {
 
   const paymentNotResult = paymenthNotPage(request)
   if (paymentNotResult) return paymentNotResult
+
+  const response = NextResponse.next();
+  response.headers.set('x-current-path', request.nextUrl.pathname);
 
   return NextResponse.next()
 }
@@ -90,5 +103,8 @@ export const config = {
     '/account/payment/:path*',
     '/account/payment',
     '/account/payment/',
+    '/account/reset-password',
+    '/account',
+    '/account/',
   ],
 }

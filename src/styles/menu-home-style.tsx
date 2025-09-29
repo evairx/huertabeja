@@ -1,3 +1,4 @@
+"use client"
 import styled from "@emotion/styled";
 
 export const Menu = styled.nav`
@@ -23,8 +24,7 @@ export const TextLogin = styled.p`
     transition: all 0.3s ease-in-out;
 
     &:hover {
-        list-style: underline;
-        text-decoration: underline;
+        opacity: 0.6;
     }
 `
 
@@ -50,5 +50,25 @@ export const IconContainer = styled.div`
 
     &:hover {
         opacity: 0.6;
+    }
+`
+
+export const AvatarLoading = styled.div`
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background-color: #E5E7EB;
+    animation: pulse 2s infinite;
+
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
+        100% {
+            opacity: 1;
+        }
     }
 `

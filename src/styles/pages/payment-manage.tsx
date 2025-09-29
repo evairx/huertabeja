@@ -28,6 +28,10 @@ export const Main = styled.main<{ width: string }>`
         underline: none;
     }
 
+    @media (max-width: 1600px) {
+       gap: 0px;
+    }
+
     @media (max-width: 1200px) {
         width: 100%;
     }
@@ -159,7 +163,6 @@ export const ButtonTrash = styled.button`
 
 export const ContainerAdd = styled.div`
     padding: 20px;
-    border-radius: 10px;
     width: 100%;
     min-height: 400px;
 
@@ -174,6 +177,10 @@ export const ContainerAdd = styled.div`
             opacity: 1;
         }
     }
+
+    @media (max-width: 1600px) {
+        min-height: 300px;
+    }
 `
 
 export const Label = styled.label`
@@ -183,6 +190,10 @@ export const Label = styled.label`
     letter-spacing: .100em;
     margin-bottom: 8px;
     margin-top: 8px;
+
+    @media (max-width: 1600px) {
+        font-size: 1rem;
+    }
 `
 
 export const Loading = styled.div`

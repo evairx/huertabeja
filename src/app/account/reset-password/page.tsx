@@ -12,16 +12,23 @@ export default async function ResetPassword() {
           <Styles.LeftContent width="455px">
             <Styles.LogoContent>
               <Image src="/logo.png" alt="Logo" width={220} height={70} />
-            </Styles.LogoContent>   
+            </Styles.LogoContent>
             <Styles.TextH1>Reiniciar contraseña</Styles.TextH1>
             <p>Se enviará un correo para reiniciar tu contraseña a tu dirección de email.</p>
-            <FormReset/>
+            <FormReset />
           </Styles.LeftContent>
         </Styles.LeftSide>
-        <Styles.ImageContainer>
+        <Styles.ImageContainer
+          height="550px"
+          queries={[
+            { break: 1600, css: "height: 450px;" },
+            { break: 1400, css: "height: 380px;" },
+            { break: 1200, css: "display: none;" },
+          ]}
+        >
           <img
-            src="/persona.webp"
-            alt="Persona con planta"
+            src="/candado.webp"
+            alt="Candado"
           />
         </Styles.ImageContainer>
       </Styles.Content>

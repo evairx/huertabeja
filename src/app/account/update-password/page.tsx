@@ -17,7 +17,7 @@ export default async function UpdatePassword() {
             <FormUpdate />
           </Styles.LeftContent>
         </Styles.LeftSide>
-        <Styles.ImageContainer height="450px">
+        <Styles.ImageContainer height="550px">
           <img
             src="/candado.webp"
             alt="Candado"

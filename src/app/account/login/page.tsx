@@ -26,7 +26,12 @@ export default async function Login() {
             <FormLogin/>
           </Styles.LeftContent>
         </Styles.LeftSide>
-        <Styles.ImageContainer height="650px">
+        <Styles.ImageContainer 
+          height="650px"
+          queries={[
+            { break: 1400, css: "height: 500px;" },
+          ]}
+        >
           <img
             src="/persona.webp"
             alt="Persona con planta"

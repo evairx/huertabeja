@@ -30,7 +30,7 @@ export default function FormLogin() {
   const handleError = (error: string) => {
     const msg = error.toLowerCase();
 
-    switch(msg) {
+    switch (msg) {
       case msg.includes("email") && msg:
         showAlert(error || "El campo email es obligatorio");
         setEmailError(true);
@@ -116,7 +116,7 @@ export default function FormLogin() {
             onBlur={() => setIsFocused(false)}
             emailError={emailError}
           />
-          <Styles.IconMail focus={isFocused} active={email.length > 0} emailError={emailError}/>
+          <Styles.IconMail focus={isFocused} active={email.length > 0} emailError={emailError} />
         </Styles.InputContainer>
       </div>
 
@@ -139,13 +139,19 @@ export default function FormLogin() {
 
       <div>
         <Styles.ForgotPassword>
-          <Link href="/reset-password">¿Olvidaste tu contraseña?</Link>
+          <Link href="/account/reset-password">¿Olvidaste tu contraseña?</Link>
         </Styles.ForgotPassword>
       </div>
 
       <Styles.ButtonSignIn type="submit">
         {loading ? <Styles.Loading color="#fff" secondColor="#01700eff" /> : "Acceder"}
       </Styles.ButtonSignIn>
+
+      <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Styles.ForgotPassword>
+          <Link href="/account/register">¿No tienes una cuenta?, Regístrate</Link>
+        </Styles.ForgotPassword>
+      </div>
     </Styles.FormContainer>
   );
 }

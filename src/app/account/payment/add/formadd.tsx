@@ -20,7 +20,8 @@ export default function FormAdd() {
     const [formData, setFormData] = useState({
         name: '',
         docType: 'RUT',
-        docNumber: ''
+        docNumber: '',
+        docNumberPublic: '',
     });
     const [paymentMethodId, setPaymentMethodId] = useState<string | null>(null);
     const [issuersId, setIssuersId] = useState<string | null>(null);
@@ -30,7 +31,9 @@ export default function FormAdd() {
 
     useEffect(() => {
         initMercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY || '', { locale: 'es-CL' });
-        setLoading(false);
+        setTimeout(() => {
+            setLoading(false);
+        }, 500);
     }, []);
 
     const handleBinChange = useCallback((bin: any) => {
@@ -39,8 +42,39 @@ export default function FormAdd() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+
+        if (name === "name") {
+            const lettersOnly = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]/g, '');
+            setFormData(prev => ({ ...prev, [name]: lettersOnly }));
+        } else if (name === "docNumber") {
+            let cleanValue = value.toUpperCase().replace(/[^0-9K]/g, '');
+
+            if (cleanValue.length > 9) cleanValue = cleanValue.slice(0, 9);
+
+            if (cleanValue.length > 1) {
+                let body = cleanValue.slice(0, -1).replace(/[^0-9]/g, '');
+                let dv = cleanValue.slice(-1);
+                if (dv !== 'K' && /\D/.test(dv)) dv = '';
+                cleanValue = body + dv;
+            }
+
+            setFormData(prev => ({
+                ...prev,
+                docNumber: cleanValue,
+                docNumberPublic: formatRUT(cleanValue),
+            }));
+        } else {
+            setFormData(prev => ({ ...prev, [name]: value }));
+        }
     };
+
+    function formatRUT(rut: string) {
+        if (!rut) return '';
+        let body = rut.slice(0, -1);
+        let dv = rut.slice(-1);
+        body = body.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return body + (dv ? '-' + dv : '');
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -94,7 +128,7 @@ export default function FormAdd() {
                         <Styles.InputLoading width={470} />
                     </Styles.InputContents>
 
-                    <Styles.LabelLoading/>
+                    <Styles.LabelLoading />
                     <Styles.InputContents>
                         <Styles.InputLoading width={470} />
                     </Styles.InputContents>
@@ -115,7 +149,7 @@ export default function FormAdd() {
                         </div>
                     </Styles.InputsContent>
 
-                    <ButtonAddCardLoading/>
+                    <ButtonAddCardLoading />
                 </>
             ) : (
                 <>
@@ -138,7 +172,7 @@ export default function FormAdd() {
                         <Styles.Input
                             type="text"
                             name="docNumber"
-                            value={formData.docNumber}
+                            value={formData.docNumberPublic}
                             onChange={handleChange}
                             required
                             error={error}

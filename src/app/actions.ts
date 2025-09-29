@@ -45,6 +45,42 @@ export async function signIn(formData: FormData) {
     return { status: 200, body: { data } };
 }
 
+export async function signUp(formData: FormData) {
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    if (!name) {
+        return { status: 400, body: { error: "El nombre es requerido" } }
+    }
+
+    if (!email) {
+        return { status: 400, body: { error: "El email es requerido" } }
+    }
+
+    if (!password) {
+        return { status: 400, body: { error: "La contraseña es requerida" } }
+    }
+
+    const supabase = getSupabaseClient();
+
+    const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+            data: {
+                full_name: name || '',
+            }
+        }
+    });
+
+    if (error) {
+        return { status: 400, body: { error: error.message } }
+    }
+
+    return { status: 200, body: { message: "Usuario creado exitosamente" } };
+}
+
 export async function setSession(access_token: string, refresh_token: string, at_expires_at: number) {
     if (!access_token || !refresh_token) return { status: 500 };
     const cookieStore = await cookies();
@@ -71,7 +107,39 @@ export async function setSession(access_token: string, refresh_token: string, at
     return { status: 200 };
 }
 
-export async function sendResetPasswordEmnail(formData: FormData) {
+export async function getSession() {
+    const cookieStore = await cookies();
+
+    const access_token = cookieStore.get("access_token")?.value || null;
+    const refresh_token = cookieStore.get("refresh_token")?.value || null;
+
+    if (!access_token || !refresh_token) {
+        return { status: 400, body: { error: "No autenticado" } }
+    }
+
+    const supabase = getSupabaseClient();
+
+    await supabase.auth.setSession({
+        access_token: access_token,
+        refresh_token: refresh_token,
+    });
+
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error) {
+        return { status: 400, body: { error: error.message } }
+    }
+
+    const { data: sessionData, error: sessionError } = await supabase.from("users").select("*").eq("id", user?.id).single();
+
+    if (sessionError) {
+        return { status: 400, body: { error: sessionError.message } }
+    }
+
+    return { status: 200, body: { data: sessionData } };
+}
+
+export async function sendResetPasswordEmail(formData: FormData) {
     const supabase = getSupabaseClient();
     const email = formData.get("email") as string;
 

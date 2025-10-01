@@ -9,7 +9,30 @@ export const Menu = styled.nav`
     padding: 2rem 3rem;
     max-width: 1700px;
     margin: 0 auto;
+
+    @media (max-width: 950px) {
+        padding: 2rem 2rem;
+    }
+
+    @media (max-width: 750px) {
+        padding: 1.5rem 1.5rem;
+    }
 `
+export const Ulcenter = styled.ul`
+    list-style: none;
+    display: flex;
+    font-size: 1.2rem;
+    font-weigh: 500;
+    align-items: center;
+    gap: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    @media (max-width: 600px) {
+        display: none;
+    }
+`
+
 export const UlRight = styled.ul`
     list-style: none;
     display: flex;
@@ -50,7 +73,8 @@ export const IconContainer = styled.div`
     position: relative;
 
     &:hover {
-        opacity: 0.6;
+        transform: scale(0.96);
+        opacity: 0.8;
     }
 `
 
@@ -94,6 +118,7 @@ export const AvatarLoading = styled.div`
 
 export const UserContainer = styled.div`
     position: relative;
+  
 `
 
 export const AvatarContainer = styled.div`
@@ -103,8 +128,10 @@ export const AvatarContainer = styled.div`
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     position: relative;
+    transition: all 0.3s ease-in-out;
 
-    & :hover {
+    &:hover {
+        transform: scale(0.98);
         opacity: 0.8;
     }
 `
@@ -131,6 +158,10 @@ export const UserName = styled.p`
     font-size: 1.1rem;
     font-weight: 500;
     color: var(--color-black);
+
+    @media (max-width: 850px) {
+        display: none;
+    }
 `
 
 export const OptionsMenu = styled.div<{ open: boolean }>`
@@ -146,9 +177,16 @@ export const OptionsMenu = styled.div<{ open: boolean }>`
     z-index: 999;
     -webkit-box-shadow: 0px 0px 15px -4px rgba(0,0,0,0.19); 
     box-shadow: 0px 0px 15px -4px rgba(0,0,0,0.19);
-    display: ${({ open }) => (open ? "flex" : "none")};
-    pointer-events: auto;
-    transition: all 0.3s ease-in-out;
+    opacity: ${({ open }) => (open ? "1" : "0")};
+    visibility: ${({ open }) => (open ? "visible" : "hidden")};
+    transition: all 0.3 ease-in-out;
+
+    @media (max-width: 1750px) {
+        right: -30px;
+    }
+    @media (max-width: 850px) {
+        right: -70px;
+    }
 `
 
 export const OptionsItem = styled.div`

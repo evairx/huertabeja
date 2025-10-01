@@ -3,7 +3,7 @@
 import * as Styles from "@/styles/menu-home-style";
 import ClientRefresher from "@/components/client/ClientRefresher";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { getSession, isLogged, signOut } from "@/app/actions";
+import { getSession, signOut } from "@/app/actions";
 import { useRouter } from "next/navigation";
 
 import Link from "next/link";
@@ -96,10 +96,10 @@ export default function ButtonLogin() {
                 <Styles.UserName>{shortName(user.name)}</Styles.UserName>
             </Styles.AvatarContainer>
             <Styles.OptionsMenu open={menuOpen}>
-                <Styles.OptionsItem>
-                    <Link href="/account/profile">Perfil</Link>
+                <Styles.OptionsItem onClick={toggleMenu}>
+                    <Link href="/account">Mi Cuenta</Link>
                 </Styles.OptionsItem>
-                <Styles.OptionsItem>
+                <Styles.OptionsItem onClick={toggleMenu}>
                     <Link href="/account/orders">Mis Pedidos</Link>
                 </Styles.OptionsItem>
                 <Styles.OptionsItem onClick={handleSignOut}>

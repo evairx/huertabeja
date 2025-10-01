@@ -22,6 +22,7 @@ export default function ClientRefresher({ children, onSuccess }: ClientRefresher
         });
 
         if (!res.ok) {
+          router.refresh();
           console.error("Failed to refresh session:", res.statusText);
           return;
         }
@@ -41,9 +42,11 @@ export default function ClientRefresher({ children, onSuccess }: ClientRefresher
             router.refresh();
           }
         } else {
+          router.refresh();
           console.error("Invalid session data:", session);
         }
       } catch (error) {
+        router.refresh();
         console.error("Error fetching session:", error);
       }
     };

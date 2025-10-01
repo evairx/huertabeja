@@ -18,12 +18,14 @@ export async function POST(req: Request) {
         });
 
         if (error || !data?.session) {
+            await cookiesStore.delete("refresh_token");
             return NextResponse.json({ error: "Failed to refresh session" }, { status: 401 });
         }
 
         const { access_token, refresh_token, expires_at } = data.session;
 
         if (typeof expires_at !== "number") {
+            await cookiesStore.delete("refresh_token");
             return NextResponse.json({ error: "Session expiration time is missing" }, { status: 500 });
         }
 
@@ -31,6 +33,7 @@ export async function POST(req: Request) {
 
         return response;
     } catch (err) {
+        await cookies().delete("refresh_token");
         return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
     }
 }

@@ -136,18 +136,6 @@ export async function setSession(access_token: string, refresh_token: string, at
     return { status: 200 };
 }
 
-export async function isLogged() {
-    const cookieStore = await cookies();
-
-    const refresh_token = cookieStore.get("refresh_token")?.value || null;
-
-    if (!refresh_token) {
-        return { status: 200, body: { isLogged: false } }
-    }
-
-    return { status: 200, body: { isLogged: true } };
-}
-
 export async function getSession() {
     const cookieStore = await cookies();
 
@@ -171,13 +159,28 @@ export async function getSession() {
         return { status: 400, body: { error: error.message } }
     }
 
-    const { data: sessionData, error: sessionError } = await supabase.from("users").select("*").eq("id", user?.id).single();
+    const { data: sessionData, error: sessionError } = await supabase
+      .from("users").select("*")
+      .eq("id", user?.id)
+      .single();
 
     if (sessionError) {
         return { status: 400, body: { error: sessionError.message } }
     }
+    
+    console.log(sessionData.rol_id) 
 
-    return { status: 200, body: { data: sessionData } };
+    const { data: role, error: rolError } = await supabase
+      .from("roles").select("*")
+      .eq("id", sessionData.rol_id)
+      .single();
+
+    const rol = {
+      name: role.rol,
+      perms: role.permissions
+    }
+
+    return { status: 200, body: { data: sessionData, rol } };
 }
 
 export async function sendResetPasswordEmail(formData: FormData) {

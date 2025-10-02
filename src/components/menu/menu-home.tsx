@@ -21,14 +21,14 @@ export default async function MenuHome() {
             </Styles.Ulcenter>
             <Styles.UlRight>
                 {refresh ? (
-                    <ButtonLogin / >
+                    <ButtonLogin />
                 ) : (
                     <Link href="/account/login">
                         <Styles.TextLogin>Acceder</Styles.TextLogin>
                     </Link>
                 )}
-                <Styles.BorderSeparator / >
-                <ButtonCart / >
+                <Styles.BorderSeparator />
+                <ButtonCart />
             </Styles.UlRight>
         </Styles.Menu>
     )

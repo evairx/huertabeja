@@ -2,8 +2,7 @@ import * as Styles from "@/styles/pages/account-style"
 import Link from "next/link";
 import { Suspense } from "react";
 import EmailText from "./emailtext";
-import Dropdowm from "./dropdown.tsx";
-import { getSession } from "@/app/actions"
+import Dropdowm from "./dropdown";
 
 export const metadata = {
     title: 'Mi Cuenta - Huertabeja',
@@ -11,33 +10,34 @@ export const metadata = {
 }
 
 export default async function AccountPage({ searchParams }: { searchParams: { [key: string]: string | string[] } }) {
-    const session = await getSession();
-  
-  const menuOptions = {
+
+    const menuOptions = {
         general: [
             { name: "Email", href: "/account", current: !searchParams.tab || searchParams.tab === "email" },
             { name: "Contraseña", href: "/account?tab=password", current: searchParams.tab === "password" },
             { name: "Mis direcciones", href: "/account?tab=delivery", current: searchParams.tab === "delivery" },
         ],
         purchases: [
-            { name: "Mis pedidos", href: "/account/orders", current: searchParams.tab === "orders" },
-            { name: "Mis metodos de pagos", href: "/account/payment/manage", current: searchParams.tab === "payment" },
+            { name: "Mis pedidos", href: "/account/orders", current: null },
+            { name: "Mis metodos de pagos", href: "/account/payment/manage", current: null },
         ],
     }
 
-    const panelOption = {
-    
+    let perms = ["access_panel"];
+
+    if (perms.includes("access_panel")) {
+        menuOptions.general.unshift({ name: "Panel de control", href: "/dashboard", current: false });
     }
 
     return (
         <Styles.Container>
             <Styles.HeaderContent>
-              <Styles.TitlePage>Mi Cuenta</Styles.TitlePage>
-              <Dropdowm>
-                <Styles.Dropdowm>
-                  <Styles.TitleMenu>Menú</Styles.TitleMenu>
-                </Styles.Dropdowm>
-              </Dropdowm>
+                <Styles.TitlePage>Mi Cuenta</Styles.TitlePage>
+                <Dropdowm>
+                    <Styles.Dropdowm>
+                        <Styles.TitleMenu>Menú</Styles.TitleMenu>
+                    </Styles.Dropdowm>
+                </Dropdowm>
             </Styles.HeaderContent>
             <Styles.Main>
                 <Styles.Menu>
@@ -45,7 +45,7 @@ export default async function AccountPage({ searchParams }: { searchParams: { [k
                     <Styles.OptionsContent>
                         {menuOptions && menuOptions.general.map((option) => (
                             <Link key={option?.name} href={option?.href}>
-                                <Styles.Option key={option?.name} current={option?.current}>
+                                <Styles.Option key={option?.name} >
                                     {option?.name}
                                 </Styles.Option>
                             </Link>
@@ -56,7 +56,7 @@ export default async function AccountPage({ searchParams }: { searchParams: { [k
                     <Styles.OptionsContent>
                         {menuOptions.purchases.map((option) => (
                             <Link key={option.name} href={option.href}>
-                                <Styles.Option key={option.name} current={option.current}>
+                                <Styles.Option key={option.name}>
                                     {option.name}
                                 </Styles.Option>
                             </Link>

@@ -1,7 +1,6 @@
 "use client";
 
 import * as Styles from "@/styles/menu-home-style";
-import ClientRefresher from "@/components/client/ClientRefresher";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { getSession, signOut } from "@/app/actions";
 import { useRouter } from "next/navigation";
@@ -11,25 +10,20 @@ import Link from "next/link";
 export default function ButtonLogin() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<any>(null);
-    const [refresh, setRefresh] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
     const fetchUser = useCallback(async () => {
         setLoading(true);
-        setRefresh(false);
 
         try {
             const res = await getSession();
 
             if (res?.status === 200) {
                 setUser(res.body?.data);
-            } else {
-                setRefresh(true);
             }
         } catch (error) {
-            setRefresh(true);
         } finally {
             setLoading(false);
         }
@@ -57,14 +51,6 @@ export default function ButtonLogin() {
         };
     }, [menuOpen]);
 
-    if (refresh) {
-        return (
-            <ClientRefresher onSuccess={fetchUser}>
-                <Styles.AvatarLoading />
-            </ClientRefresher>
-        );
-    }
-
     if (loading) return <Styles.AvatarLoading />;
 
     function shortName(name: string) {
@@ -80,7 +66,7 @@ export default function ButtonLogin() {
     const handleSignOut = async () => {
         const res = await signOut();
         if (res?.status === 200) {
-            router.refresh();
+            router.push('/account/login');
         }
     };
 

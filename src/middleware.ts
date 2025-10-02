@@ -3,6 +3,47 @@ import type { NextRequest } from 'next/server'
 import { decodeJwt } from 'jose';
 import { getSupabaseClient } from './libs/supabase';
 
+async function tokenRefresher(request: NextRequest, refreshToken: string | undefined, accessToken: string | undefined) {
+  if (!refreshToken) return null
+
+  if (accessToken) return null
+
+  try {
+    const supabase = getSupabaseClient()
+
+    const { data, error } = await supabase.auth.refreshSession({
+      refresh_token: refreshToken,
+    })
+
+    if (error || !data.session) {
+      return NextResponse.redirect(new URL('/account/login', request.url))
+    }
+
+    const newAccess = data.session.access_token
+    const newRefresh = data.session.refresh_token
+
+    const response = NextResponse.next()
+
+    response.cookies.set('access_token', newAccess, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+    })
+    response.cookies.set('refresh_token', newRefresh, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+    })
+
+    return response
+  } catch (err) {
+    console.error('Error refrescando token:', err)
+    return NextResponse.redirect(new URL('/account/login', request.url))
+  }
+}
+
 async function dashboardMiddleware(request: NextRequest, accessToken: string | undefined) {
   const pathname = request.nextUrl.pathname
 
@@ -88,6 +129,9 @@ export async function middleware(request: NextRequest) {
   const paymentNotResult = paymenthNotPage(request)
   if (paymentNotResult) return paymentNotResult
 
+  const refreshResult = await tokenRefresher(request, refreshToken, accessToken)
+  if (refreshResult) return refreshResult
+
   const response = NextResponse.next();
   response.headers.set('x-current-path', request.nextUrl.pathname);
 
@@ -95,16 +139,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/admin/:path*',
-    '/dashboard/:path*',
-    '/account/login',
-    '/account/register',
-    '/account/payment/:path*',
-    '/account/payment',
-    '/account/payment/',
-    '/account/reset-password',
-    '/account',
-    '/account/',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }

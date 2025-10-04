@@ -6,7 +6,7 @@ import { cookies } from "next/headers"
 
 export default async function MenuHome() {
     const cookiesStore = await cookies()
-    const refresh = cookiesStore.get("refresh_token")?.value
+    const refresh = cookiesStore.get("rid")?.value
 
     return (
         <Styles.Menu>

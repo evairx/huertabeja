@@ -5,9 +5,7 @@ import { useContext } from "react"
 import ShoppingCartIcon from "@/utils/icons/shopping-cart"
 
 export function ButtonCart() {
-    const { open, setOpen } = useContext(CartContext)
-
-    let counter = 2;
+    const { open, setOpen, cart } = useContext(CartContext)
 
     const handleClickCart = () => {
         setOpen(!open)
@@ -15,8 +13,8 @@ export function ButtonCart() {
 
     return (
         <Styles.IconContainer onClick={handleClickCart}>
-            {counter > 0 && (
-                <Styles.CounterCart>{counter}</Styles.CounterCart>
+            {cart && cart?.data && 'total_quantity' in cart.data && cart.data.total_quantity > 0 && (
+                <Styles.CounterCart>{cart.data.total_quantity}</Styles.CounterCart>
             )}
             <ShoppingCartIcon />
         </Styles.IconContainer>

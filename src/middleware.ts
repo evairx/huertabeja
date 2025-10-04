@@ -1,66 +1,88 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { decodeJwt } from 'jose';
-import { getSupabaseClient } from './libs/supabase';
+import { decodeJwt } from 'jose'
+import { getSupabaseClient } from './libs/supabase'
 
-async function tokenRefresher(request: NextRequest, refreshToken: string | undefined, accessToken: string | undefined) {
-  if (!refreshToken) return null
+/** ---- Helpers ---- **/
 
-  if (accessToken) return null
+function generateCartId() {
+  const array = new Uint8Array(16)
+  crypto.getRandomValues(array)
+
+  return btoa(String.fromCharCode(...array))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+}
+
+function clearAuthCookies(response: NextResponse) {
+  response.cookies.delete('sid')
+  response.cookies.delete('rid')
+  return response
+}
+
+function ensureCartCookie(request: NextRequest, response: NextResponse) {
+  if (!request.cookies.get('cart') && !response.cookies.get('cart')) {
+    response.cookies.set('cart', generateCartId(), {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+    })
+  }
+  return response
+}
+
+/** ---- Middlewares ---- **/
+
+async function tokenRefresher(request: NextRequest, refreshToken?: string, accessToken?: string) {
+  if (!refreshToken || accessToken) return null
 
   try {
     const supabase = getSupabaseClient()
-
-    const { data, error } = await supabase.auth.refreshSession({
-      refresh_token: refreshToken,
-    })
+    const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken })
 
     if (error || !data.session) {
-      return NextResponse.redirect(new URL('/account/login', request.url))
+      const res = NextResponse.redirect(new URL('/account/login', request.url))
+      return clearAuthCookies(res)
     }
 
-    const newAccess = data.session.access_token
-    const newRefresh = data.session.refresh_token
-
-    const response = NextResponse.next()
-
-    response.cookies.set('access_token', newAccess, {
+    const res = NextResponse.next()
+    res.cookies.set('sid', data.session.access_token, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
       path: '/',
     })
-    response.cookies.set('refresh_token', newRefresh, {
+    res.cookies.set('rid', data.session.refresh_token, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
       path: '/',
     })
 
-    return response
+    return res
   } catch (err) {
     console.error('Error refrescando token:', err)
-    return NextResponse.redirect(new URL('/account/login', request.url))
+    const res = NextResponse.redirect(new URL('/account/login', request.url))
+    return clearAuthCookies(res)
   }
 }
 
-async function dashboardMiddleware(request: NextRequest, accessToken: string | undefined) {
-  const pathname = request.nextUrl.pathname
-
-  if (!pathname.startsWith('/dashboard')) {
-    return null
-  }
+async function dashboardMiddleware(request: NextRequest, accessToken?: string) {
+  const { pathname } = request.nextUrl
+  if (!pathname.startsWith('/dashboard')) return null
 
   if (!accessToken) {
-    return NextResponse.redirect(new URL('/', request.url))
+    const res = NextResponse.redirect(new URL('/', request.url))
+    return clearAuthCookies(res)
   }
 
   try {
-    const jwtdecode = await decodeJwt(accessToken)
-    const idUser = jwtdecode.sub
-
+    const { sub: idUser } = await decodeJwt(accessToken)
     if (!idUser) {
-      return NextResponse.redirect(new URL('/account/login', request.url))
+      const res = NextResponse.redirect(new URL('/account/login', request.url))
+      return clearAuthCookies(res)
     }
 
     const supabase = getSupabaseClient()
@@ -71,73 +93,70 @@ async function dashboardMiddleware(request: NextRequest, accessToken: string | u
     }
 
     return null
-
-  } catch (error) {
-    return NextResponse.redirect(new URL('/account/login', request.url))
+  } catch {
+    const res = NextResponse.redirect(new URL('/account/login', request.url))
+    return clearAuthCookies(res)
   }
 }
 
-function authMiddleware(request: NextRequest, accessToken: string | undefined, refreshToken: string | undefined) {
+function authMiddleware(request: NextRequest, accessToken?: string, refreshToken?: string) {
   const pathname = request.nextUrl.pathname
+  const isAuthRoute = ['/account/login', '/account/register', '/account/login/callback'].includes(pathname)
 
-  if ((pathname === '/account/login' || pathname === '/account/register') && (accessToken || refreshToken)) {
+  if (isAuthRoute && (accessToken || refreshToken)) {
     return NextResponse.redirect(new URL('/account', request.url))
   }
   return null
 }
 
-function accountMiddleware(request: NextRequest, refresh_token: string | undefined) {
-  const pathname = request.nextUrl.pathname
+function accountMiddleware(request: NextRequest, refreshToken?: string) {
+  const { pathname } = request.nextUrl
+  const publicPaths = ['/account/login', '/account/register', '/account/reset-password']
 
-  const publicPaths = [
-    '/account/login',
-    '/account/register',
-    '/account/reset-password',
-  ]
-
-  const isAccountRoute = pathname.startsWith('/account')
-  const isPublicRoute = publicPaths.some(path => pathname.startsWith(path))
-
-  if (isAccountRoute && !isPublicRoute && !refresh_token) {
-    return NextResponse.redirect(new URL('/account/login', request.url))
+  if (pathname.startsWith('/account') && !publicPaths.some(p => pathname.startsWith(p)) && !refreshToken) {
+    const res = NextResponse.redirect(new URL('/account/login', request.url))
+    return clearAuthCookies(res)
   }
-
   return null
 }
 
-function paymenthNotPage(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
-
+function paymentNotPage(request: NextRequest) {
+  const { pathname } = request.nextUrl
   if (pathname === '/account/payment' || pathname === '/account/payment/') {
     return NextResponse.redirect(new URL('/account/payment/manage', request.url))
   }
+  return null
 }
 
+/** ---- Main Middleware ---- **/
+
 export async function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get('access_token')?.value
-  const refreshToken = request.cookies.get('refresh_token')?.value
+  const accessToken = request.cookies.get('sid')?.value
+  const refreshToken = request.cookies.get('rid')?.value
 
-  const dashboardResult = await dashboardMiddleware(request, accessToken)
-  if (dashboardResult) return dashboardResult
+  // Orden lógico de ejecución
+  const checks = [
+    () => dashboardMiddleware(request, accessToken),
+    () => authMiddleware(request, accessToken, refreshToken),
+    () => accountMiddleware(request, refreshToken),
+    () => paymentNotPage(request),
+    () => tokenRefresher(request, refreshToken, accessToken),
+  ]
 
-  const authResult = authMiddleware(request, accessToken, refreshToken)
-  if (authResult) return authResult
+  for (const check of checks) {
+    const result = await check()
+    if (result) return result
+  }
 
-  const accountResult = accountMiddleware(request, refreshToken)
-  if (accountResult) return accountResult
+  let response = NextResponse.next()
+  response = ensureCartCookie(request, response)
+  response.headers.set('x-current-path', request.nextUrl.pathname)
 
-  const paymentNotResult = paymenthNotPage(request)
-  if (paymentNotResult) return paymentNotResult
-
-  const refreshResult = await tokenRefresher(request, refreshToken, accessToken)
-  if (refreshResult) return refreshResult
-
-  const response = NextResponse.next();
-  response.headers.set('x-current-path', request.nextUrl.pathname);
-
-  return NextResponse.next()
+  return response
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|account/login/callback).*)',
+  ],
 }

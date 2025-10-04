@@ -79,7 +79,10 @@ export default function ButtonLogin() {
                         alt={user.name}
                     />
                 </Styles.Avatar>
-                <Styles.UserName>{shortName(user.name)}</Styles.UserName>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                    <Styles.UserName>{shortName(user.name)}</Styles.UserName>
+                    <Styles.ChevronIcon open={menuOpen} />
+                </div>
             </Styles.AvatarContainer>
             <Styles.OptionsMenu open={menuOpen}>
                 <Styles.OptionsItem onClick={toggleMenu}>

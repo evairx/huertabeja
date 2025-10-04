@@ -3,32 +3,14 @@ import Link from "next/link";
 import { Suspense } from "react";
 import EmailText from "./emailtext";
 import Dropdowm from "./dropdown";
+import Tabs from "./tabs";
 
 export const metadata = {
     title: 'Mi Cuenta - Huertabeja',
     description: 'Gestiona tu cuenta de Huertabeja, cambia tu correo, contraseña y direcciones de envío.',
 }
 
-export default async function AccountPage({ searchParams }: { searchParams: { [key: string]: string | string[] } }) {
-
-    const menuOptions = {
-        general: [
-            { name: "Email", href: "/account", current: !searchParams.tab || searchParams.tab === "email" },
-            { name: "Contraseña", href: "/account?tab=password", current: searchParams.tab === "password" },
-            { name: "Mis direcciones", href: "/account?tab=delivery", current: searchParams.tab === "delivery" },
-        ],
-        purchases: [
-            { name: "Mis pedidos", href: "/account/orders", current: null },
-            { name: "Mis metodos de pagos", href: "/account/payment/manage", current: null },
-        ],
-    }
-
-    let perms = ["access_panel"];
-
-    if (perms.includes("access_panel")) {
-        menuOptions.general.unshift({ name: "Panel de control", href: "/dashboard", current: false });
-    }
-
+export default function AccountPage({ searchParams }: { searchParams: { [key: string]: string | string[] } }) {
     return (
         <Styles.Container>
             <Styles.HeaderContent>
@@ -40,33 +22,13 @@ export default async function AccountPage({ searchParams }: { searchParams: { [k
                 </Dropdowm>
             </Styles.HeaderContent>
             <Styles.Main>
-                <Styles.Menu>
-                    <Styles.TitleMenu>General</Styles.TitleMenu>
-                    <Styles.OptionsContent>
-                        {menuOptions && menuOptions.general.map((option) => (
-                            <Link key={option?.name} href={option?.href}>
-                                <Styles.Option key={option?.name} >
-                                    {option?.name}
-                                </Styles.Option>
-                            </Link>
-                        ))}
-                    </Styles.OptionsContent>
-
-                    <Styles.TitleMenu>Compras</Styles.TitleMenu>
-                    <Styles.OptionsContent>
-                        {menuOptions.purchases.map((option) => (
-                            <Link key={option.name} href={option.href}>
-                                <Styles.Option key={option.name}>
-                                    {option.name}
-                                </Styles.Option>
-                            </Link>
-                        ))}
-                    </Styles.OptionsContent>
-                </Styles.Menu>
+                <Suspense fallback={<p>Cargando menu...</p>}>
+                    <Tabs searchParams={searchParams} />
+                </Suspense>
 
                 {(!searchParams.tab || searchParams.tab === "email") && (
                     <Styles.Content>
-                        <Styles.TitleTab>Email</Styles.TitleTab>
+                        <Styles.TitleTab>Correo</Styles.TitleTab>
                         <Styles.SubTitleTab>
                             Cambia la dirección de correo que utilizas para acceder
                             a Huertabeja

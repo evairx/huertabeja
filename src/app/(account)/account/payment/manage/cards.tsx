@@ -3,24 +3,11 @@ import * as Styles from "@/styles/pages/payment-manage";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import RemoveCard from "./removeCard";
-import ClientRefresher from "@/components/client/ClientRefresher";
 
 export async function Cards() {
     const cookiesStore = await cookies();
-    const access_token = cookiesStore.get("access_token")?.value;
-    const refresh_token = cookiesStore.get("refresh_token")?.value;
-
-    if (!access_token) {
-        return (
-            <ClientRefresher>
-                <Styles.ContainerCards>
-                    {[1, 2, 3].map((_, index) => (
-                        <Styles.CardLoadingSkeleton key={index} />
-                    ))}
-                </Styles.ContainerCards>
-            </ClientRefresher>
-        );
-    }
+    const access_token = cookiesStore.get("sid")?.value;
+    const refresh_token = cookiesStore.get("rid")?.value;
 
     if (!refresh_token) {
         redirect('/account/login');
@@ -29,7 +16,7 @@ export async function Cards() {
     const supabase = getSupabaseClient();
 
     await supabase.auth.setSession({
-        access_token: access_token,
+        access_token: access_token || '',
         refresh_token: refresh_token,
     });
 

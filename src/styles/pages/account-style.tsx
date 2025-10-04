@@ -78,15 +78,17 @@ export const OptionsContent = styled.ul`
     }
 `
 
-export const Option = styled.li`
+export const Option = styled.li<{ current: boolean | null }>`
     font-size: 1.1rem;
-    cursor: pointer;
-    padding: 10px 15px;
+    cursor: ${({ current }) => current ? `default` : `pointer`};
+    padding: ${({ current }) => current ? `10px 25px` : `8px 16px`};
     transition: all 0.3s ease;
+    ${({ current }) => current && `background-color: #FFFFFF; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.06);` }
+    border-radius: 666px;
 
     &:hover {
         background-color: #FFFFFF;
-        opacity: 0.4;
+        opacity: ${({ current }) => current ? `1` : `0.5`};
     }
 
     @media (max-width: 1600px) {

@@ -4,6 +4,7 @@ import * as Styles from "@/styles/menu-home-style";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { getSession, signOut } from "@/app/actions";
 import { useRouter } from "next/navigation";
+import { getReturnUrl } from "@/utils/get-return-url";
 
 import Link from "next/link";
 
@@ -13,6 +14,7 @@ export default function ButtonUser() {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const { path } = getReturnUrl();
 
     const fetchUser = useCallback(async () => {
         setLoading(true);
@@ -66,11 +68,11 @@ export default function ButtonUser() {
     const handleSignOut = async () => {
         const res = await signOut();
         if (res?.status === 200) {
-            router.push('/account/login');
+            router.push(path);
         }
     };
 
-    return  (
+    return (
         <Styles.UserContainer ref={menuRef}>
             <Styles.AvatarContainer onClick={toggleMenu}>
                 <Styles.Avatar>

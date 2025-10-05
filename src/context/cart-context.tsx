@@ -1,6 +1,6 @@
 "use client";
 import { createContext, PropsWithChildren, useState, useEffect, useCallback } from "react";
-import { getCart, removeCart } from "@/app/actions";
+import { getCart, removeProductCart } from "@/app/actions";
 
 interface CartContextType {
   open: boolean;
@@ -54,7 +54,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
 
   const removeItemFromCart = useCallback(async (itemId: string) => {
     try {
-      const result = await removeCart(itemId);
+      const result = await removeProductCart(itemId);
 
       if (!result || result.status !== 200) {
         console.warn("Error removing item from cart:", result);

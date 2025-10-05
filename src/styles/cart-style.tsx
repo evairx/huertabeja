@@ -7,7 +7,7 @@ export const CartContainer = styled.div<{ open: boolean }>`
   z-index: 999;
   height: 95%;
   top: 1.35rem;
-  border-radius: 8px;
+  border-radius: 20px;
   border: 2px solid #DBDBDB;
   right: ${({ open }) => (open ? "2rem" : "-48rem")};
   transition: right 0.4s ease-in-out;
@@ -96,6 +96,8 @@ export const CartItem = styled.div`
 export const CartItemImage = styled.img`
   width: 140px;
   height: 140px;
+  object-fit: cover;
+  border-radius: 12px;
 `
 
 export const CartItemTitle = styled.h2`

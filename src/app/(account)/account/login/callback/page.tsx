@@ -2,11 +2,12 @@
 import { useEffect, Suspense } from "react";
 import { setSession } from "@/app/actions";
 import { useSearchParams, useRouter } from "next/navigation";
+import { safeReturnUrl } from "@/utils/safe-return-url";
 
 function LoginCallbackContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const returnUrl = searchParams.get('return_url') || '/';
+    const returnUrl = safeReturnUrl(searchParams.get("returnUrl") || "/");
 
     useEffect(() => {
         async function session() {

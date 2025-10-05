@@ -30,6 +30,7 @@ export default async function Login() {
           height="650px"
           queries={[
             { break: 1400, css: "height: 500px;" },
+            { break: 1050, css: "display: none;" }
           ]}
         >
           <img

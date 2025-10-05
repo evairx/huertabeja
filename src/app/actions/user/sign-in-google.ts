@@ -1,12 +1,17 @@
 'use server'
 import { getSupabaseClient } from "@/libs/supabase"
 
-export async function signInGoogle({ returnUrl} : {returnUrl: string}) {
+export async function signInGoogle({ returnUrl }:{ returnUrl: string }) {
     const supabase = getSupabaseClient();
+
+    const url = process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000'
+        : process.env.NEXT_PUBLIC_URL_BASE;
+
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: `http://localhost:3000/account/login/callback?return_url=${encodeURIComponent(returnUrl)}`,
+            redirectTo: `${url}/account/login/callback?return_url=${encodeURIComponent(returnUrl)}`,
         },
     });
 

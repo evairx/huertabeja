@@ -7,7 +7,7 @@ import { AlertContext } from "@/context/alert-context";
 
 import GoogleSvg from "@/utils/icons/google-svg";
 
-export default function ButtonGoogleLogin() {
+export default function ButtonGoogleLogin({ returnUrl }: {returnUrl: string}) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const { showAlert } = useContext(AlertContext);
@@ -16,7 +16,7 @@ export default function ButtonGoogleLogin() {
         if (loading) return;
         setLoading(!loading);
         
-        const data = await signInGoogle();
+        const data = await signInGoogle({ returnUrl });
 
         if(data.status == 200 && data.body?.data?.url) {
             router.push(data.body.data.url);

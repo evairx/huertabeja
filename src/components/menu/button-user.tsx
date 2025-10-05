@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 import Link from "next/link";
 
-export default function ButtonLogin() {
+export default function ButtonUser() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<any>(null);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -70,7 +70,7 @@ export default function ButtonLogin() {
         }
     };
 
-    return user ? (
+    return  (
         <Styles.UserContainer ref={menuRef}>
             <Styles.AvatarContainer onClick={toggleMenu}>
                 <Styles.Avatar>
@@ -95,11 +95,6 @@ export default function ButtonLogin() {
                     <p>Cerrar Sesión</p>
                 </Styles.OptionsItem>
             </Styles.OptionsMenu>
-
         </Styles.UserContainer>
-    ) : (
-        <Link href="/account/login">
-            <Styles.TextLogin>Acceder</Styles.TextLogin>
-        </Link>
-    );
+    )
 }

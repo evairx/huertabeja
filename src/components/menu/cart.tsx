@@ -42,7 +42,6 @@ export default function Cart() {
                 )}
             </Styles.CartContent>
             <Styles.BorderLine />
-            
         </Styles.CartContainer>
     </>
   );

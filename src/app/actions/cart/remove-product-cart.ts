@@ -16,7 +16,7 @@ interface Carrito {
     currency: string;
 }
 
-export async function removeCart(itemId: string) {
+export async function removeProductCart(itemId: string) {
     try {
         const cookieStore = await cookies();
         const cartId = cookieStore.get('cart')?.value;

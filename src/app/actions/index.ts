@@ -12,4 +12,4 @@ export * from './payment/save-card'
 export * from './payment/remove-card'
 
 export * from './cart/get-cart'
-export * from './cart/remove-cart'
+export * from './cart/remove-product-cart'

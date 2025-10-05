@@ -10,7 +10,9 @@ export const metadata: Metadata = {
   description: 'Inicia sesión en Huertabeja para gestionar tus plantas y recibir consejos personalizados de cuidado.',
 }
 
-export default async function Login() {
+export default async function Login({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+  const returnUrl = Array.isArray(searchParams.return_url) ? searchParams.return_url[0] : searchParams.return_url || '/';
+
   return (
     <Styles.Container>
       <Alert />
@@ -21,7 +23,7 @@ export default async function Login() {
               <Image src="/logo.png" alt="Logo" width={220} height={70} />
             </Styles.LogoContent>   
             <Styles.TextH1>Iniciar sesión</Styles.TextH1>
-            <ButtonGoogleLogin />
+            <ButtonGoogleLogin returnUrl={returnUrl} />
             <Styles.Divider>O</Styles.Divider>
             <FormLogin/>
           </Styles.LeftContent>

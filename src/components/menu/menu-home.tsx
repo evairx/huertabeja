@@ -1,13 +1,13 @@
 import * as Styles from "@/styles/menu-home-style"
 import Link from "next/link"
-import ButtonLogin from "./button-login."
+import ButtonUser from "./button-user"
+import ButtonLogin from "./button-login"
 import { ButtonCart } from "./button-cart"
 import { cookies } from "next/headers"
 
 export default async function MenuHome() {
     const cookiesStore = await cookies()
     const refresh = cookiesStore.get("rid")?.value
-
     return (
         <Styles.Menu>
             <div>
@@ -21,11 +21,9 @@ export default async function MenuHome() {
             </Styles.Ulcenter>
             <Styles.UlRight>
                 {refresh ? (
-                    <ButtonLogin />
+                    <ButtonUser />
                 ) : (
-                    <Link href="/account/login">
-                        <Styles.TextLogin>Acceder</Styles.TextLogin>
-                    </Link>
+                    <ButtonLogin />
                 )}
                 <Styles.BorderSeparator />
                 <ButtonCart />

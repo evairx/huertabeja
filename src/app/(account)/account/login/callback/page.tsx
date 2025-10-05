@@ -2,9 +2,12 @@
 import { useEffect } from "react";
 import { setSession } from "@/app/actions";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function loginCallback() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const returnUrl = searchParams.get('return_url') || '/';
 
     useEffect(() => {
         async function session() {
@@ -19,9 +22,9 @@ export default function loginCallback() {
             if (accessToken && refreshToken) {
                 await setSession(accessToken, refreshToken, at_expires_at).then((res) => {
                     if (res.status === 200) {
-                        router.push("/account");
+                        router.push(returnUrl);
                     } else {
-                        router.push("/login");
+                        router.push("/account/login");
                     }
                 });
             }

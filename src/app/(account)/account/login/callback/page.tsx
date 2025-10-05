@@ -1,10 +1,9 @@
 "use client"
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { setSession } from "@/app/actions";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
-export default function loginCallback() {
+function LoginCallbackContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const returnUrl = searchParams.get('return_url') || '/';
@@ -34,4 +33,12 @@ export default function loginCallback() {
     }, []);
 
     return <div>loginCallback</div>;
+}
+
+export default function LoginCallback() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <LoginCallbackContent />
+        </Suspense>
+    );
 }

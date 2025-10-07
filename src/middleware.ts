@@ -28,6 +28,7 @@ function ensureCartCookie(request: NextRequest, response: NextResponse) {
       secure: true,
       sameSite: 'strict',
       path: '/',
+      maxAge: 60 * 60 * 24 * 30,
     })
   }
   return response

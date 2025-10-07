@@ -19,12 +19,16 @@ export default function Cart() {
                 <Styles.CloseButton onClick={() => setOpen(false)}>Cerrar</Styles.CloseButton>
             </div>
             <Styles.BorderLine />
-            <Styles.CountInfo>
-                {cart && 'total_quantity' in cart.data && (
-                    <Styles.CountText>{cart.data.total_quantity} {cart.data.total_quantity === 1 ? 'artículo' : 'artículos'} en la bolsa</Styles.CountText>
-                )}
-            </Styles.CountInfo>
-            <Styles.BorderLine />
+            {cart && 'total_quantity' in cart.data && cart.data.items.length > 0 && (
+                <>
+                <Styles.CountInfo>
+                    {cart && 'total_quantity' in cart.data && (
+                        <Styles.CountText>{cart.data.total_quantity} {cart.data.total_quantity === 1 ? 'artículo' : 'artículos'} en la bolsa</Styles.CountText>
+                    )}
+                </Styles.CountInfo>
+                <Styles.BorderLine />
+                </>
+            )}
             <Styles.CartContent>
                 {cart?.status === 200 && 'items' in cart.data && cart.data.items.length ? (
                     cart.data.items.map((item) => (

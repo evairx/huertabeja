@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation';
 
 export function getReturnUrl() {
     const pathname = usePathname();
+    
     const base = process.env.NODE_ENV === 'development'
         ? 'http://localhost:3000'
         : process.env.NEXT_PUBLIC_URL_BASE;

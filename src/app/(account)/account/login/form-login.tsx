@@ -131,6 +131,7 @@ export default function FormLogin() {
             onFocus={() => setIsFocusedPass(true)}
             onBlur={() => setIsFocusedPass(false)}
             passwordError={passwordError}
+            autoComplete="current-password"
           />
           <Styles.IconPassword focus={isFocusedPass} active={password.length > 0} />
           <Styles.IconEye active={password.length > 0} showPassword={showPassword} onClick={() => setShowPassword(!showPassword)} />

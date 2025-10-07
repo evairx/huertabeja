@@ -1,12 +1,18 @@
-const allowedHosts = [process.env.NEXT_PUBLIC_URL_BASE, 'localhost:3000'];
+const allowedHosts = [
+  new URL(process.env.NEXT_PUBLIC_URL_BASE ?? '').host,
+  'localhost:3000'
+];
 
 export function safeReturnUrl(url: string) {
   try {
-    if (url.startsWith('/')) return url;
-    const parsed = new URL(url);
+    const decoded = decodeURIComponent(url);
 
-    if (allowedHosts.includes(parsed.host)) return url;
+    if (decoded.startsWith('/')) return decoded;
+
+    const parsed = new URL(decoded);
+
+    if (allowedHosts.includes(parsed.host)) return decoded;
   } catch (e) {}
 
-  return `${process.env.NEXT_PUBLIC_URL_BASE}/`
+  return process.env.NEXT_PUBLIC_URL_BASE;
 }

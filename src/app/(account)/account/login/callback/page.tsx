@@ -7,7 +7,7 @@ import { safeReturnUrl } from "@/utils/safe-return-url";
 function LoginCallbackContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const returnUrl = safeReturnUrl(searchParams.get("returnUrl") || "/");
+    const returnUrl = safeReturnUrl(searchParams.get("return_url") || "/");
 
     useEffect(() => {
         async function session() {
@@ -21,7 +21,7 @@ function LoginCallbackContent() {
 
             if (accessToken && refreshToken) {
                 await setSession(accessToken, refreshToken, at_expires_at).then((res) => {
-                    if (res.status === 200) {
+                    if (res.status === 200 && returnUrl) {
                         router.push(returnUrl);
                     } else {
                         router.push("/account/login");
@@ -31,7 +31,7 @@ function LoginCallbackContent() {
         }
 
         session();
-    }, []);
+    }, [router, returnUrl]);
 
     return <div>loginCallback</div>;
 }

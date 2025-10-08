@@ -6,10 +6,12 @@ import { useContext, useState } from "react";
 import { signIn, setSession } from "@/app/actions";
 import { AlertContext } from "@/context/alert-context";
 import { validateEmail, validatePassword } from "@/utils/validations";
+import { safeReturnUrl } from "@/utils/safe-return-url";
 import Link from "next/link";
 
-export default function FormLogin() {
+export default function FormLogin( { returnUrl }: { returnUrl: string }) {
   const { showAlert } = useContext(AlertContext);
+  const url = safeReturnUrl(returnUrl);
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -95,7 +97,7 @@ export default function FormLogin() {
       );
 
       if (sessionRes.status === 200) {
-        router.push("/account");
+        router.push(url ?? '/');
       } else {
         setLoading(false);
       }

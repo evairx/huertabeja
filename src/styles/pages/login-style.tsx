@@ -74,6 +74,10 @@ export const TextH1 = styled.h1`
     @media (max-width: 1400px) {
       font-size: 1.6rem;
     }
+
+    @media (max-width: 768px) {
+      font-size: 1.4rem;
+    }
 `
 
 export const ProviderButton = styled.button<{ Loading?: boolean }>`

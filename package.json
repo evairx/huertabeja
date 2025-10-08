@@ -1,6 +1,6 @@
 {
 	"name": "huertabeja",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
@@ -15,17 +15,17 @@
 		"@emotion/styled": "11.14.1",
 		"@mercadopago/sdk-react": "1.0.6",
 		"@opennextjs/cloudflare": "1.9.1",
-		"@supabase/supabase-js": "2.58.0",
+		"@supabase/supabase-js": "2.74.0",
 		"jose": "6.1.0",
 		"next": "14.2.33",
 		"react": "18.3.1",
 		"react-dom": "18.3.1"
 	},
 	"devDependencies": {
-		"@types/node": "20.19.19",
+		"@types/node": "24.7.0",
 		"@types/react": "19",
 		"@types/react-dom": "19",
 		"typescript": "5",
-		"wrangler": "4.39.0"
+		"wrangler": "4.42.1"
 	}
 }

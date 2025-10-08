@@ -16,7 +16,11 @@ export default async function Login({ searchParams }: { searchParams: { [key: st
   return (
     <Styles.Container>
       <Alert />
-      <Styles.Content>
+      <Styles.Content
+        queries={[
+          { break: 450, css: "height: 60dvh;" }
+        ]}
+      >
         <Styles.LeftSide>
           <Styles.LeftContent>
             <Styles.LogoContent>
@@ -25,7 +29,7 @@ export default async function Login({ searchParams }: { searchParams: { [key: st
             <Styles.TextH1>Iniciar sesión</Styles.TextH1>
             <ButtonGoogleLogin returnUrl={returnUrl} />
             <Styles.Divider>O</Styles.Divider>
-            <FormLogin/>
+            <FormLogin returnUrl={returnUrl}/>
           </Styles.LeftContent>
         </Styles.LeftSide>
         <Styles.ImageContainer 

@@ -1,31 +1,22 @@
 {
-	"name": "huertabeja",
-	"version": "0.1.0",
-	"private": true,
-	"scripts": {
-		"dev": "next dev",
-		"build": "next build",
-		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
-	},
-	"dependencies": {
-		"@emotion/cache": "11.14.0",
-		"@emotion/react": "11.14.0",
-		"@emotion/styled": "11.14.1",
-		"@mercadopago/sdk-react": "1.0.6",
-		"@opennextjs/cloudflare": "1.9.1",
-		"@supabase/supabase-js": "2.58.0",
-		"jose": "6.1.0",
-		"next": "14.2.33",
-		"react": "18.3.1",
-		"react-dom": "18.3.1"
-	},
-	"devDependencies": {
-		"@types/node": "20.19.19",
-		"@types/react": "19",
-		"@types/react-dom": "19",
-		"typescript": "5",
-		"wrangler": "4.39.0"
-	}
+  "name": "huertabeja-v2",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro build && wrangler pages dev ./dist",
+    "astro": "astro",
+    "deploy": "astro build && wrangler pages deploy ./dist --commit-dirty=true"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "12.6.10",
+    "@astrojs/preact": "^4.1.1",
+    "@midudev/tailwind-animations": "^0.2.0",
+    "@supabase/supabase-js": "2.74.0",
+    "@tailwindcss/vite": "4.1.16",
+    "astro": "^5.15.1",
+    "preact": "^10.27.2",
+    "tailwindcss": "4.1.16"
+  }
 }

@@ -1,163 +1,93 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { decodeJwt } from 'jose'
-import { getSupabaseClient } from './libs/supabase'
-
-/** ---- Helpers ---- **/
+import { defineMiddleware } from "astro/middleware";
+import { getSupabaseClient } from "./lib/supabase";
 
 function generateCartId() {
-  const array = new Uint8Array(16)
-  crypto.getRandomValues(array)
+    const array = new Uint8Array(16)
+    crypto.getRandomValues(array)
 
-  return btoa(String.fromCharCode(...array))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '')
+    return btoa(String.fromCharCode(...array))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '')
 }
 
-function clearAuthCookies(response: NextResponse) {
-  response.cookies.delete('sid')
-  response.cookies.delete('rid')
-  return response
+function cartMiddleware({ cookies }: { cookies: any }) {
+    const cart = cookies.get("cart");
+    if (cart?.value) return;
+
+    cookies.set("cart", generateCartId(), {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30,
+    });
 }
 
-function ensureCartCookie(request: NextRequest, response: NextResponse) {
-  if (!request.cookies.get('cart') && !response.cookies.get('cart')) {
-    response.cookies.set('cart', generateCartId(), {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-    })
-  }
-  return response
-}
+function authMiddleware({ cookies, url }: { cookies: any, url: any }) {
+    const refresh_token = cookies.get("rid")?.value;
 
-/** ---- Middlewares ---- **/
+    const authPages = ['/account/login', '/account/register', '/account/forgot-password'];
 
-async function tokenRefresher(request: NextRequest, refreshToken?: string, accessToken?: string) {
-  if (!refreshToken || accessToken) return null
-
-  try {
-    const supabase = getSupabaseClient()
-    const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken })
-
-    if (error || !data.session) {
-      const res = NextResponse.redirect(new URL('/account/login', request.url))
-      return clearAuthCookies(res)
+    if (refresh_token && authPages.includes(url)) {
+        return new Response(null, {
+            status: 302,
+            headers: {
+                Location: "/account",
+            },
+        });
     }
-
-    const res = NextResponse.next()
-    res.cookies.set('sid', data.session.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      path: '/',
-    })
-    res.cookies.set('rid', data.session.refresh_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      path: '/',
-    })
-
-    return res
-  } catch (err) {
-    console.error('Error refrescando token:', err)
-    const res = NextResponse.redirect(new URL('/account/login', request.url))
-    return clearAuthCookies(res)
-  }
 }
 
-async function dashboardMiddleware(request: NextRequest, accessToken?: string) {
-  const { pathname } = request.nextUrl
-  if (!pathname.startsWith('/dashboard')) return null
+async function tokenRefresher({ cookies }: { cookies: any }) {
+    const access_token = cookies.get("sid")?.value;
+    const refresh_token = cookies.get("rid")?.value;
 
-  if (!accessToken) {
-    const res = NextResponse.redirect(new URL('/', request.url))
-    return clearAuthCookies(res)
-  }
+    if (access_token || !refresh_token) return;
 
-  try {
-    const { sub: idUser } = await decodeJwt(accessToken)
-    if (!idUser) {
-      const res = NextResponse.redirect(new URL('/account/login', request.url))
-      return clearAuthCookies(res)
+    try {
+        const supabase = getSupabaseClient();
+        const { data, error } = await supabase.auth.refreshSession({ refresh_token });
+
+        if (error || !data?.session) {
+            cookies.delete("sid", { path: "/" });
+            cookies.delete("rid", { path: "/" });
+            return;
+        }
+
+        const { session } = data;
+
+        const now = Math.floor(Date.now() / 1000);
+        const expiresAt = session.expires_at ?? now + 3600;
+        const maxAge = expiresAt - now;
+
+        cookies.set("sid", session.access_token, {
+            path: "/",
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge,
+        });
+
+        cookies.set("rid", session.refresh_token, {
+            path: "/",
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 60 * 60 * 24 * 30,
+        });
+
+    } catch (err) {
+        console.error("Refresh Error:", err);
+        cookies.delete("sid", { path: "/" });
+        cookies.delete("rid", { path: "/" });
     }
-
-    const supabase = getSupabaseClient()
-    const { data, error } = await supabase.rpc('user_access_panel', { p_user_id: idUser })
-
-    if (error || !data) {
-      return NextResponse.redirect(new URL('/account', request.url))
-    }
-
-    return null
-  } catch {
-    const res = NextResponse.redirect(new URL('/account/login', request.url))
-    return clearAuthCookies(res)
-  }
 }
 
-function authMiddleware(request: NextRequest, accessToken?: string, refreshToken?: string) {
-  const pathname = request.nextUrl.pathname
-  const isAuthRoute = ['/account/login', '/account/register', '/account/login/callback'].includes(pathname)
-
-  if (isAuthRoute && (accessToken || refreshToken)) {
-    return NextResponse.redirect(new URL('/account', request.url))
-  }
-  return null
-}
-
-function accountMiddleware(request: NextRequest, refreshToken?: string) {
-  const { pathname } = request.nextUrl
-  const publicPaths = ['/account/login', '/account/register', '/account/reset-password']
-
-  if (pathname.startsWith('/account') && !publicPaths.some(p => pathname.startsWith(p)) && !refreshToken) {
-    const res = NextResponse.redirect(new URL('/account/login', request.url))
-    return clearAuthCookies(res)
-  }
-  return null
-}
-
-function paymentNotPage(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  if (pathname === '/account/payment' || pathname === '/account/payment/') {
-    return NextResponse.redirect(new URL('/account/payment/manage', request.url))
-  }
-  return null
-}
-
-/** ---- Main Middleware ---- **/
-
-export async function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get('sid')?.value
-  const refreshToken = request.cookies.get('rid')?.value
-
-  // Orden lógico de ejecución
-  const checks = [
-    () => dashboardMiddleware(request, accessToken),
-    () => authMiddleware(request, accessToken, refreshToken),
-    () => accountMiddleware(request, refreshToken),
-    () => paymentNotPage(request),
-    () => tokenRefresher(request, refreshToken, accessToken),
-  ]
-
-  for (const check of checks) {
-    const result = await check()
-    if (result) return result
-  }
-
-  let response = NextResponse.next()
-  response = ensureCartCookie(request, response)
-  response.headers.set('x-current-path', request.nextUrl.pathname)
-
-  return response
-}
-
-export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|account/login/callback).*)',
-  ],
-}
+export const onRequest = defineMiddleware(async ({ url, cookies }, next) => {
+    cartMiddleware({ cookies });
+    await tokenRefresher({ cookies });
+    const auth = authMiddleware({ cookies, url: url.pathname });
+    if (auth) return auth;
+    return next();
+});

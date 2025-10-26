@@ -1,0 +1,37 @@
+---
+import Menu from '@/components/menu.astro'
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main class="max-w-[1400px] mx-auto">
+        <Menu />
+        <slot />
+    </main>
+</body>
+</html>
+
+<style is:global>
+	@import "tailwindcss";
+
+    @theme {
+        --breakpoint-xss: 55rem;
+        --breakpoint-sm: 31.25rem;
+        --shadow-google: rgba(0, 0, 0, 0.15) 1px 8px 14px -8px;
+    }
+
+    body {
+        background: #eee;
+    }
+
+    p, h1, h2, h3, h4, h5, h6 {
+        margin: 0;
+        padding: 0;
+    }
+</style>

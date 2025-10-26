@@ -1,15 +1,7 @@
-"use client"
-import { usePathname } from 'next/navigation';
+import { PROD } from "astro:env/server";
 
-export function getReturnUrl() {
-    const pathname = usePathname();
-    
-    const base = process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000'
-        : process.env.NEXT_PUBLIC_URL_BASE;
-
-    const url = `${base}/account/login?return_url=${encodeURIComponent(base + pathname)}`;
-    const path = pathname;
-
-    return { url, path };
+export function getReturnUrl({ path }: { path: string }): string {
+    const baseUrl = PROD ? "https://huertabeja-astro.evairx.me" : "http://localhost:4321";
+    const url = `/account/login?return_url=${encodeURIComponent(baseUrl + path)}`;
+    return url;
 }

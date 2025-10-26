@@ -1,17 +1,19 @@
-# Huertabeja
 
-## Primeros pasos
+## Huertabeja v2
 
-Utilizando NPM:
-```bash 
-npm install
-```
-o Utilizando BUN ( Recomendado ):
-```bash 
-bun install
-```
+#### Tecnologias:
+<p align="center">
+  <img src="https://img.shields.io/badge/Astro-FF5A03?style=for-the-badge&logo=astro&logoColor=white" alt="Astro" />
+</p>
 
 ## Iniciar Proyecto
-```bash 
-bun run dev
+
+#### Insatalar deps:
+```bash
+bun install || npm install
+```
+
+#### Iniciar Proyecto
+```bash
+bun run dev || npm run dev
 ```

@@ -1,0 +1,171 @@
+---
+import Layout from "@/layouts/auth.astro";
+import GoogleSvg from "@/assets/icons/google-svg.astro";
+import LoadingSpinner from "@/assets/icons/loading-spinner.astro";
+---
+
+<Layout>
+    <section
+        class="laptop:flex laptop:items-center laptop:justify-between laptop:h-dvh laptop:gap-12"
+    >
+        <div
+            class="flex items-center flex-col justify-center h-dvh max-w-[520px] px-0 tablet:px-4 tablet:mx-auto laptop:mx-[0] laptop:w-[520px]"
+        >
+            <div class="mb-6 mobile:mb-8">
+                <img src="/logo.png" alt="Logo" class="h-14" />
+            </div>
+
+            <h1
+                class="text-[1.5rem] mobile:text-[1.8rem] font-bold uppercase tracking-[0.080em]"
+            >
+                Iniciar sesión
+            </h1>
+
+            <div class="w-full p-[1rem] mobile:p-[2rem] mt-2 mobile-mt-0]">
+                <button
+                    class="bg-white shadow-sm w-full text-[1.050rem] h-[3rem] mobile:text-[1.3rem] mobile:h-[3.4rem] rounded-full flex items-center justify-center gap-3 cursor-pointer hover:scale-[0.97] hover:opacity-70 transition-all duration-300"
+                    id="google-login"
+                >
+                    <GoogleSvg />
+                    Continuar con google
+                    <div class="hidden" id="loading-spinner">
+                        <LoadingSpinner />
+                    </div>
+                </button>
+
+                <div
+                    class="flex items-center text-black font-medium text-center mt-4"
+                >
+                    <div class="flex-1 border-b-2 border-[#aaaaaa65] mx-[10px]">
+                    </div>
+                    O
+                    <div class="flex-1 border-b-2 border-[#aaaaaa65] mx-[10px]">
+                    </div>
+                </div>
+
+                <form class="mt-2 mobile:mt-4 w-full">
+                    <label
+                        class="text-[.900rem] mobile:text-[1rem] text-[#696969] tracking-[0.20em] uppercase font-medium flex flex-col gap-2 relative"
+                    >
+                        EMAIL
+                        <div class="emailIcon"></div>
+                        <input
+                            type="email"
+                            autocomplete="email"
+                            class="bg-white text-[1.2rem] font-medium rounded-full h-[2.8rem] mobile:h-[3.2rem] text-black w-full shadow-sm tracking-normal px-[3.5rem] border-[transparent] transition-all duration-300 focus:outline-0 border-[2px] focus:border-[#004E09]"
+                        />
+                    </label>
+
+                    <label
+                        class="mt-3 mobile:mt-4 text-[.900rem] mobile:text-[1rem] text-[#696969] tracking-[0.20em] uppercase font-medium flex flex-col gap-2 relative"
+                    >
+                        CONTRASEÑA
+                        <div class="passwordIcon"></div>
+                        <input
+                            type="password"
+                            autocomplete="current-password"
+                            class="bg-white text-[1.2rem] rounded-full h-[2.8rem] mobile:h-[3.2rem] font-medium text-black w-full shadow-sm tracking-normal px-[3.5rem] border-[transparent] transition-all duration-300 focus:outline-0 border-[2px] focus:border-[#004E09]"
+                        />
+                    </label>
+
+                    <a
+                        href="/account/forgot-password"
+                        class="text-[.900rem] mobile:text-[1.1rem] text-[#004E09] font-medium float-right mt-4 hover:underline"
+                    >
+                        ¿Olvidaste tu contraseña?
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="bg-[#01700eff] w-full text-white text-[1.150rem] h-[2.9rem] mt-4 mobile:text-[1.3rem] mobile:h-[3.2rem] rounded-full mobile:mt-5 font-medium hover:bg-[#003706] transition-colors duration-300"
+                    >
+                        Acceder
+                    </button>
+
+                    <a
+                        href="/account/register"
+                        class="block text-center text-[.900rem] mobile:text-[1.1rem] text-[#004E09] font-medium mt-4 mobile:mt-5 hover:underline"
+                    >
+                        ¿No tienes una cuenta? Regístrate
+                    </a>
+                </form>
+            </div>
+        </div>
+        <div
+            class="hidden laptop:flex justify-center items-center w-[50%] desktop-lg:w-[auto]"
+        >
+            <img
+                class="w-[280px] h-[auto] desktop-lg:w-[300px] desktop-xl:w-[390px] desktop-xl:h-[auto]"
+                src="/persona.webp"
+                alt="persona"
+            />
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .emailIcon {
+        position: absolute;
+        top: 71%;
+        left: 1.3rem;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        opacity: 0.5;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-image: var(--email-svg);
+    }
+
+    .passwordIcon {
+        position: absolute;
+        top: 71%;
+        left: 1.3rem;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        opacity: 0.5;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-image: var(--password-svg);
+    }
+</style>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const returnUrl = params.get("return_url");
+
+    import { actions } from "astro:actions";
+    import { navigate } from "astro:transitions/client";
+
+    const googleLoginBtn = document.getElementById("google-login");
+    const loadingSpinner = document.getElementById("loading-spinner");
+
+    googleLoginBtn?.addEventListener("click", async () => {
+        if (!loadingSpinner) return;
+
+        const setSpinner = (visible: boolean, animation?: string) => {
+            loadingSpinner.className = "hidden";
+            if (visible)
+                loadingSpinner.className = `visible ${animation || ""}`.trim();
+        };
+
+        setSpinner(true, "animate-zoom-in");
+
+        const data = await actions.signInGoogle(
+            returnUrl ? decodeURIComponent(returnUrl) : "",
+        );
+
+        if (data?.data?.success) {
+            setSpinner(true, "animate-zoom-out");
+
+            setTimeout(async () => {
+                setSpinner(false);
+
+                await new Promise((r) => setTimeout(r, 200));
+
+                navigate(data.data.redirectTo || "/");
+            }, 600);
+        }
+    });
+</script>

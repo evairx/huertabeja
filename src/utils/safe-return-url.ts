@@ -1,6 +1,8 @@
+import { PROD } from "astro:env/server";
+
 const allowedHosts = [
-  new URL(process.env.NEXT_PUBLIC_URL_BASE ?? '').host,
-  'localhost:3000'
+  new URL("https://huertabeja-astro.evairx.me").host,
+  'localhost:4321'
 ];
 
 export function safeReturnUrl(url: string) {
@@ -14,5 +16,5 @@ export function safeReturnUrl(url: string) {
     if (allowedHosts.includes(parsed.host)) return decoded;
   } catch (e) {}
 
-  return process.env.NEXT_PUBLIC_URL_BASE;
+  return PROD ? "https://huertabeja-astro.evairx.me" : "http://localhost:4321";
 }

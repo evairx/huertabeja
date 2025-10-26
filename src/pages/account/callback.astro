@@ -1,0 +1,44 @@
+---
+import Layout from '@/layouts/auth.astro';
+import LoadingSpinner from '@/assets/icons/loading-spinner.astro';
+---
+
+<Layout>
+    <section class="flex gap-6 flex-col items-center justify-center h-dvh">
+        <img src="/logo.png" alt="Logo" width="240px" class="mb-8">
+        <LoadingSpinner/>
+    </section>
+</Layout>
+
+<script>
+    import { actions } from "astro:actions";
+    import { navigate } from 'astro:transitions/client';
+
+    const url = new URLSearchParams(window.location.search);
+    const returnUrl = url.get('return_url');
+
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.substring(1));
+    const access_token = params.get("access_token");
+    const refresh_token = params.get("refresh_token");
+    const at_expires_at = params.get("expires_at") ? parseInt(params.get("expires_at") as string) : 0;
+
+    if(!access_token && !refresh_token && !at_expires_at) {
+        navigate('/account/login');
+    }
+
+    const data = {  
+        access_token,
+        refresh_token,
+        at_expires_at,
+        returnUrl
+    }
+
+    const res  = await actions.callbackGoogle(data);
+
+    if (res && 'data' in res && res.data?.success) {
+        navigate(res.data?.redirectTo || '/account');
+    } else {
+        navigate('/account/login');
+    }
+</script>

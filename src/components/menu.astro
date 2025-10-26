@@ -1,0 +1,54 @@
+---
+import { getReturnUrl } from "@/utils/get-return-url";
+import ButtonUser from "./user/button-user.astro";
+
+const path = Astro.url.pathname;
+const url = getReturnUrl({ path });
+
+const access_token = Astro.cookies.get('sid')?.value ?? null;
+---
+
+<nav class="w-full flex items-center justify-between p-[1.2rem] mt-2 xss:mt-6 transition-all duration-300 ">
+    <div class="mb-2 cursor-pointer hover:opacity-70">
+        <a href="/">
+            <img src="/logo.png" alt="Logo" class="h-14" />
+        </a>
+    </div>
+    <ul class="hidden xss:flex space-x-4 gap-8">
+        <li class="text-xl hover:opacity-70">
+            <a href="/">Inicio</a>
+        </li>
+        <li class="text-xl hover:opacity-70">
+            <a href="/about">Sobre nosotros</a>
+        </li>
+        <li class="text-xl hover:opacity-70">
+            <a href="/contact">Contacto</a>
+        </li>
+    </ul>
+    <div class="hidden sm:flex items-center justify-center space-x-6">
+        {access_token ?
+            <ButtonUser access_token={access_token} server:defer>
+                <div slot="fallback" class="flex items-center gap-[10px] cursor-pointer transition-all duration-300 relative hover:scale-[0.98] hover:opacity-80">
+                    <div class="inline-block border-2 border-[#2c6e49] p-[2px] w-[44px] h-[44px] overflow-hidden rounded-full">
+                        <div class="w-full h-full rounded-full bg-neutral-300 animate-pulse"></div>
+                    </div>
+                    <div class="flex items-center gap-[3px]">
+                        <div class="text-[1.1rem] font-medium text-black max-[850px]:hidden bg-neutral-300 h-4 w-20 rounded animate-pulse"></div>
+                        <div class="w-4 h-4 rounded bg-neutral-300 animate-pulse"></div>
+                    </div>
+                </div>
+            </ButtonUser>
+            :
+            <button class="text-[1.3rem] font-semibold text-[#004E09] cursor-pointer hover:opacity-70">
+                <a href={url}>Acceder</a>
+            </button>
+        }
+        <div class="w-[3px] h-[30px] bg-[#004E09]"></div>
+        <button class="bg-[#004E09] h-[40px] w-[40px] flex items-center justify-center rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><g stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" clip-path="url(#a)"><path d="M6.331 8H17.67a2 2 0 0 1 1.977 2.304l-1.255 8.152A3 3 0 0 1 15.426 21H8.574a3 3 0 0 1-2.965-2.544l-1.255-8.152A2 2 0 0 1 6.331 8Z"></path><path d="M9 11V6a3 3 0 1 1 6 0v5"></path></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h24v24H0z"></path></clipPath></defs></svg>
+        </button>
+    </div>
+    <div class="flex text-[#004E09] sm:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-menu"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 8l16 0" /><path d="M4 16l16 0" /></svg>
+    </div>
+</nav>

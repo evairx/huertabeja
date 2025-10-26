@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <main class="max-w-[1150px] mx-auto">
+            <slot />
+        </main>
+    </body>
+</html>
+
+<style is:global>
+    @import "tailwindcss";
+    @plugin "@midudev/tailwind-animations";
+    
+    @theme {
+        --breakpoint-mobile: 25.75rem;
+        --breakpoint-tablet: 37.5rem;
+        --breakpoint-laptop: 68.75rem;
+        --breakpoint-desktop: 75rem;
+        --breakpoint-desktop-lg: 100rem;
+        --breakpoint-desktop-xl: 120rem;
+        
+        --animate-spinner: 2s linear 0s infinite normal none running spinner;
+
+        @keyframes spinner {
+            0% {
+                stroke-dasharray: 0.01px, 43.97px;
+                transform: rotate(0);
+            }
+
+            50% {
+                stroke-dasharray: 21.99px, 21.99px;
+                transform: rotate(450deg);
+            }
+
+            100% {
+                stroke-dasharray: 0.01px, 43.97px;
+                transform: rotate(1080deg);
+            }
+        }
+    }
+
+    :root {
+        --email-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' class='icon icon-tabler icons-tabler-outline icon-tabler-mail'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z' /%3E%3Cpath d='M3 7l9 6l9 -6' /%3E%3C/svg%3E");
+        --password-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor'  stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' class='icon icon-tabler icons-tabler-outline icon-tabler-lock'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z' /%3E%3Cpath d='M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0' /%3E%3Cpath d='M8 11v-4a4 4 0 1 1 8 0v4' /%3E%3C/svg%3E");
+    }
+
+    body {
+        background: #eee;
+    }
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0;
+        padding: 0;
+    }
+</style>

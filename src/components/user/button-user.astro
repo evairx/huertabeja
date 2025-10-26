@@ -1,0 +1,44 @@
+---
+import { getSupabaseClient } from "@/lib/supabase";
+import ButtonUserClient from "./button-user-client";
+
+let userData = null;
+let hasError = false;
+
+const access_token = (Astro.props?.access_token as string) ?? null;
+const refresh_token = (Astro.cookies.get("rid")?.value as string) ?? null;
+
+try {
+    const supabase = getSupabaseClient();
+
+    await supabase.auth.setSession({
+        access_token,
+        refresh_token,
+    });
+
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) throw new Error("No se pudo obtener usuario");
+
+    const { data, error: sessionError } = await supabase
+        .from("users").select("*")
+        .eq("id", user.id)
+        .single();
+
+    if (sessionError) throw new Error("No se pudo obtener datos del usuario");
+
+    userData = {
+        avatar: data?.avatar,
+        name: data?.name,
+    };
+} catch (err) {
+    console.error("Error al obtener usuario:", err);
+    hasError = true;
+}
+---
+
+
+{hasError ? (
+    <p class="text-red-500">No estás logueado.</p>
+) : (
+    <ButtonUserClient user={userData} client:load />
+)}
